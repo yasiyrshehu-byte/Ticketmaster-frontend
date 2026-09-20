@@ -1,11 +1,15 @@
-# TicketWAVES static replacement
+# TicketWAVES static iPhone-first demo
 
-Delete the old GitHub Pages files and upload the contents of this folder.
+Upload all files/folders in this package to the root of the GitHub Pages repository.
 
-Required files:
+Files:
 - index.html
 - style.css
 - script.js
-- assets/bts-hero.jpg
+- manifest.json
+- service-worker.js
+- assets/
 
-This is a static school-demo frontend. No Node/Vite build step is required.
+The app is a static client-side demo. Ticket/event data is stored in localStorage, so edits from For You stay synchronized across My Tickets, Event Details, View Ticket, Sell and Account on the same browser/device.
+
+No demo event is seeded. Use **For You → Add Ticket** to create the first event.
