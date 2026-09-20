@@ -204,6 +204,8 @@ esc(g.venue)+(g.location ? " - "+esc(g.location) : "")+
    '<div class="ticket-tab">Extras</div>'+
 '</div>'+
 
+'<div class="map">'+
+
   '<section class="order">'+
         '<div class="order-head"><div><div class="order-num">Order #'+esc(g.order)+'</div><div class="order-sub">x'+count+' Ticket'+(count===1?"":"s")+'</div></div><button class="dots" onclick="eventMenu(\''+encodeURIComponent(g.id)+'\')">⋮</button></div>'+
         g.tickets.map((t,i)=>ticketCard(g,t,i)).join("")+
