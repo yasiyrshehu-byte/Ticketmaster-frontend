@@ -194,3 +194,246 @@ button{border:0;background:none}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:94px;background:#222;color:#fff;padding:11px 15px;border-radius:999px;font-size:13px;z-index:500}
 @keyframes scan{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
 @media(min-width:700px){.shell{box-shadow:0 0 22px rgba(0,0,0,.12)}}
+/* =========================================================
+   FINAL MOBILE SIZE FIX
+   Makes the ticket detail compact like the reference
+   ========================================================= */
+
+@media screen and (max-width:430px){
+
+  /* Keep the app itself narrow like a real phone */
+  .shell{
+    width:100%;
+    max-width:390px;
+    margin:0 auto;
+    padding-bottom:78px;
+  }
+
+  /* -------------------------
+     TOP IMAGE
+     ------------------------- */
+  .tm-top{
+    height:260px !important;
+    overflow:hidden;
+  }
+
+  .tm-top-image{
+    width:100%;
+    height:260px !important;
+    object-fit:cover;
+    object-position:center 20%;
+  }
+
+  .tm-back{
+    left:16px;
+    top:12px;
+    width:46px;
+    height:46px;
+    font-size:44px;
+  }
+
+  .tm-menu{
+    right:16px;
+    top:18px;
+    font-size:22px;
+    letter-spacing:2px;
+  }
+
+  /* -------------------------
+     BLACK INFORMATION CARD
+     ------------------------- */
+  .tm-info{
+    width:calc(100% - 32px) !important;
+    margin-left:16px !important;
+    min-height:285px !important;
+    padding:19px 22px 22px !important;
+    border-radius:9px 9px 0 0 !important;
+  }
+
+  /* White angled cut on right */
+  .tm-info::after{
+    right:-20px !important;
+    width:20px !important;
+    height:58px !important;
+    background:#fff !important;
+    clip-path:polygon(
+      0 0,
+      100% 100%,
+      100% 0
+    ) !important;
+  }
+
+  /* Date */
+  .tm-date{
+    font-size:12px !important;
+    line-height:1.2 !important;
+    margin-bottom:18px !important;
+    letter-spacing:.45px !important;
+  }
+
+  /* Title */
+  .tm-title{
+    font-size:23px !important;
+    line-height:1.06 !important;
+    letter-spacing:-.5px !important;
+    max-width:95% !important;
+  }
+
+  /* Venue + ticket quantity */
+  .tm-bottom-row{
+    left:22px !important;
+    right:18px !important;
+    bottom:21px !important;
+    gap:8px !important;
+  }
+
+  .tm-venue{
+    font-size:13px !important;
+    line-height:1.3 !important;
+    max-width:73% !important;
+  }
+
+  .tm-count{
+    font-size:17px !important;
+    gap:6px !important;
+  }
+
+  .tm-card-icon{
+    width:27px !important;
+    height:21px !important;
+  }
+
+  .tm-card-icon::before,
+  .tm-card-icon::after{
+    width:21px !important;
+    height:16px !important;
+  }
+
+  .tm-card-icon::before{
+    left:0;
+    top:1px;
+  }
+
+  .tm-card-icon::after{
+    left:5px;
+    top:4px;
+  }
+
+  /* -------------------------
+     BLUE VIEW TICKETS BUTTON
+     ------------------------- */
+  .tm-barcode-btn{
+    width:calc(100% - 32px) !important;
+    margin-left:16px !important;
+    height:58px !important;
+    min-height:58px !important;
+    font-size:18px !important;
+    gap:11px !important;
+    border-radius:0 !important;
+  }
+
+  .tm-barcode-icon{
+    height:23px !important;
+    gap:2px !important;
+  }
+
+  /* -------------------------
+     TICKETS / EXTRAS
+     ------------------------- */
+  .tm-tabs{
+    height:88px !important;
+  }
+
+  .tm-tab{
+    font-size:16px !important;
+    padding-top:28px !important;
+  }
+
+  .tm-tab.active{
+    border-bottom-width:5px !important;
+  }
+
+  /* -------------------------
+     ORDER AREA
+     ------------------------- */
+  .tm-order{
+    padding:22px 14px 100px !important;
+  }
+
+  .tm-order-number{
+    font-size:23px !important;
+    letter-spacing:-.45px !important;
+  }
+
+  .tm-order-sub{
+    font-size:15px !important;
+    margin-top:5px !important;
+  }
+
+  .tm-order-more{
+    font-size:27px !important;
+  }
+
+  /* Ticket cards */
+  .ticket-card{
+    margin-top:14px !important;
+    padding:15px 13px 13px !important;
+  }
+
+  .ticket-head{
+    font-size:15px !important;
+    margin-bottom:14px !important;
+  }
+
+  .seat-label{
+    font-size:10px !important;
+  }
+
+  .seat-value{
+    font-size:19px !important;
+  }
+
+  /* -------------------------
+     MAP
+     ------------------------- */
+  .tm-map{
+    height:180px !important;
+  }
+
+  /* -------------------------
+     FLOATING ACTION PILL
+     ------------------------- */
+  .tm-actions{
+    margin:-21px 12px 10px !important;
+    height:44px !important;
+  }
+
+  .tm-actions button{
+    font-size:11px !important;
+  }
+
+  /* -------------------------
+     DIRECTIONS
+     ------------------------- */
+  .tm-directions{
+    padding:14px 8px !important;
+    font-size:14px !important;
+  }
+
+  /* -------------------------
+     BOTTOM NAV
+     ------------------------- */
+  .bottom-nav{
+    width:100% !important;
+    max-width:390px !important;
+    height:76px !important;
+  }
+
+  .nav-icon{
+    font-size:24px !important;
+  }
+
+  .nav-label{
+    font-size:10px !important;
+  }
+}
