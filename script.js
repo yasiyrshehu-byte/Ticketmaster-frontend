@@ -198,12 +198,7 @@ esc(g.venue)+(g.location ? " - "+esc(g.location) : "")+
 '</div>'+
 
 '</div>'+
-
-'<div class="ticket-tabs">'+
-'<div class="ticket-tab active">Tickets</div>'+
-'<div class="ticket-tab">Extras</div>'+
-'</div>'+
-
+    
 '<div class="ticket-tabs">'+
    '<div class="ticket-tab active">Tickets</div>'+
    '<div class="ticket-tab">Extras</div>'+
