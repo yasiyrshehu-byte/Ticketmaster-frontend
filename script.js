@@ -187,7 +187,7 @@ esc(g.eventName)+
 esc(g.venue)+(g.location ? " - "+esc(g.location) : "")+
 '</div>'+
 
-'<div class="hero-count">🎟 x'+count+'</div>'
+'<div class="hero-count">🎟 x'+count+'</div>'+
 
 '</div>'+
 
