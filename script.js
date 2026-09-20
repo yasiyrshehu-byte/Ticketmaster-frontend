@@ -169,29 +169,42 @@ function eventPage(id){
   return render(
     header("",true)+
     '<main class="content">'+
-     '<section class="tm-hero">'+
-  '<img class="tm-image" src="'+esc(img(g.image))+'" alt="">'+
+     '<section class="hero">'+
 
-  '<div class="tm-card">'+
-    '<div class="tm-date">'+esc(dateLabel(g.date,g.time))+'</div>'+
+  '<img src="'+esc(img(g.image))+'" alt="">'+
 
-    '<div class="tm-title">'+esc(g.eventName)+'</div>'+
+  '<div class="hero-info">'+
 
-    '<div class="tm-venue">'+
-      esc(g.venue)+(g.location?" - "+esc(g.location):"")+
-    '</div>'+
+      '<div class="hero-date">'+
+         esc(dateLabel(g.date,g.time))+
+      '</div>'+
 
-    '<div class="tm-ticket-count">'+
-   '<span class="tm-ticket-icon">🎟</span>'+
-   '<span>x'+count+'</span>'+
-'</div>'+
+      '<div class="hero-name">'+
+         esc(g.eventName)+
+      '</div>'+
 
-'<button class="tm-view-btn" onclick="viewTickets(\''+encodeURIComponent(g.id)+'\')">'+
-   'View Tickets'+
-'</button>'+
+      '<div class="hero-meta">'+
+         esc(g.venue)+(g.location?" - "+esc(g.location):"")+
+      '</div>'+
+
+      '<div class="hero-count">'+
+         '🎟 x'+count+
+      '</div>'+
+
+  '</div>'+
+
+  '<div class="ticket-action">'+
+      '<button onclick="viewTickets(\''+encodeURIComponent(g.id)+'\')">'+
+          '🎟 View Tickets'+
+      '</button>'+
   '</div>'+
 
 '</section>'+
+
+'<div class="ticket-tabs">'+
+   '<div class="ticket-tab active">Tickets</div>'+
+   '<div class="ticket-tab">Extras</div>'+
+'</div>'+
 
   '<section class="order">'+
         '<div class="order-head"><div><div class="order-num">Order #'+esc(g.order)+'</div><div class="order-sub">x'+count+' Ticket'+(count===1?"":"s")+'</div></div><button class="dots" onclick="eventMenu(\''+encodeURIComponent(g.id)+'\')">⋮</button></div>'+
