@@ -42,48 +42,65 @@ body{overflow-x:hidden}
 .ticket-top{background:#000;color:#fff}
 .hero{
     position:relative;
+    height:520px;
+    overflow:visible;
 }
 
 .hero img{
     width:100%;
-    height:410px;
+    height:430px;
     object-fit:cover;
     display:block;
 }
 
 .hero-info{
     position:absolute;
+    left:28px;
+    right:42px;
+    top:250px;
 
-    left:16px;
-    right:0;
+    background:#1d1d1f;
+    color:#fff;
 
-    bottom:-170px;
+    padding:22px 18px 26px;
+
+    z-index:20;
+}
+
+.hero-info::after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:-42px;
+
+    width:42px;
+    height:110px;
 
     background:#1d1d1f;
 
-    padding:20px 18px 25px;
-
-    color:#fff;
-
-    z-index:10;
+    clip-path:polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      0 72%
+    );
 }
 
 .hero-date{
     font-size:14px;
-    font-weight:700;
+    font-weight:800;
     margin-bottom:18px;
 }
 
 .hero-name{
-    font-size:33px;
-    font-weight:800;
+    font-size:34px;
     line-height:1.15;
+    font-weight:800;
     margin-bottom:28px;
 }
 
 .hero-meta{
     font-size:17px;
-    color:#f2f2f2;
 }
 
 .hero-count{
@@ -95,23 +112,27 @@ body{overflow-x:hidden}
 }
 
 .ticket-action{
-    margin-top:170px;
-    padding:0 16px;
+    position:absolute;
+    left:28px;
+    right:42px;
+    top:475px;
+    z-index:21;
 }
 
 .ticket-action button{
     width:100%;
-    height:78px;
-    background:#0047ff;
+    height:80px;
+    border-radius:0;
+    background:#0057ff;
     color:#fff;
     font-size:22px;
-    font-weight:700;
-    border-radius:0;
+    font-weight:800;
 }
+
 .ticket-tabs{
+    margin-top:135px;
     display:flex;
     background:#fff;
-    margin-top:0;
 }
 
 .ticket-tab{
@@ -123,6 +144,10 @@ body{overflow-x:hidden}
 
 .ticket-tab.active{
     border-bottom:6px solid #111;
+}
+
+.ticket-tab:not(.active){
+    border-bottom:3px solid #8b8b8b;
 }
 
 .ticket-tab:not(.active){
