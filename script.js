@@ -1,147 +1,376 @@
-
-(() => {
+(function(){
 "use strict";
-const KEY="ticketwaves_state_v30";
-const fallbackImage="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=85";
+
+const KEY="ticketwaves_state_v10";
+const LEGACY_KEYS=["ticketwaves_state_v9","ticketwaves_state_v8","ticketwaves_state_v7","ticketwaves_state_v6"];
+const FALLBACK="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&q=85";
+
 const defaultState={
   country:"US",
-  profile:{firstName:"",lastName:"",email:"",phone:"",photo:"",city:"",notifications:true,locationBased:true,language:"en",currency:"USD",favorites:[]},
-  tickets:[],
+  tickets:[{
+    id:"demo",
+    eventName:"Your Event",
+    artistName:"Artist / Performer",
+    venue:"Your Venue",
+    location:"City, Country",
+    date:"2026-12-12",
+    time:"20:00",
+    image:FALLBACK,
+    mapQuery:"Your Venue, City, Country",
+    order:"ORDER-000001",
+    extraInfo:"Mobile Ticket",
+    tickets:[{id:"seat-1",section:"A1",row:"1",seat:"1",barcode:"000000000001"}]
+  }],
   transfers:[],
-  listings:[]
+  profile:{firstName:"",lastName:"",email:""}
 };
+
 const countries=[
-  ["US","🇺🇸","United States","en","USD","$"],["GB","🇬🇧","United Kingdom","en","GBP","£"],
-  ["CA","🇨🇦","Canada","en","CAD","$"],["AU","🇦🇺","Australia","en","AUD","$"],
-  ["BE","🇧🇪","Belgium","en","EUR","€"],["DE","🇩🇪","Deutschland","de","EUR","€"],
-  ["ES","🇪🇸","España","es","EUR","€"],["FR","🇫🇷","France","fr","EUR","€"],
-  ["IT","🇮🇹","Italia","it","EUR","€"],["NL","🇳🇱","Nederland","nl","EUR","€"],
-  ["PT","🇵🇹","Portugal","pt","EUR","€"],["JP","🇯🇵","Japan","ja","JPY","¥"],
-  ["KR","🇰🇷","South Korea","ko","KRW","₩"],["CN","🇨🇳","China","zh","CNY","¥"],
-  ["AE","🇦🇪","United Arab Emirates","ar","AED","د.إ"],["ZA","🇿🇦","South Africa","en","ZAR","R"],
-  ["CH","🇨🇭","Switzerland","de","CHF","CHF"],["MX","🇲🇽","México","es","MXN","$"]
+ ["US","🇺🇸","United States"],["NG","🇳🇬","Nigeria"],["CA","🇨🇦","Canada"],["GB","🇬🇧","United Kingdom"],
+ ["AU","🇦🇺","Australia"],["DE","🇩🇪","Germany"],["FR","🇫🇷","France"],["ES","🇪🇸","Spain"],
+ ["BE","🇧🇪","Belgium"],["NL","🇳🇱","Netherlands"],["IE","🇮🇪","Ireland"],["ZA","🇿🇦","South Africa"],
+ ["AE","🇦🇪","United Arab Emirates"],["JP","🇯🇵","Japan"],["KR","🇰🇷","South Korea"],["MX","🇲🇽","Mexico"]
 ];
-const I18N={
- en:{discover:"Discover",forYou:"For You",tickets:"My Tickets",sell:"Sell",account:"Account",search:"Artist, Event or Venue",view:"View Tickets",directions:"Get Directions",extras:"Extras",transfer:"Transfer",upgrade:"Upgrade"},
- de:{discover:"Entdecken",forYou:"Für dich",tickets:"Meine Tickets",sell:"Verkaufen",account:"Konto",search:"Künstler, Event oder Ort",view:"Tickets anzeigen",directions:"Route anzeigen",extras:"Extras",transfer:"Übertragen",upgrade:"Upgrade"},
- fr:{discover:"Découvrir",forYou:"Pour vous",tickets:"Mes billets",sell:"Vendre",account:"Compte",search:"Artiste, événement ou lieu",view:"Voir les billets",directions:"Obtenir un itinéraire",extras:"Extras",transfer:"Transférer",upgrade:"Améliorer"},
- es:{discover:"Descubrir",forYou:"Para ti",tickets:"Mis entradas",sell:"Vender",account:"Cuenta",search:"Artista, evento o lugar",view:"Ver entradas",directions:"Cómo llegar",extras:"Extras",transfer:"Transferir",upgrade:"Mejorar"},
- it:{discover:"Scopri",forYou:"Per te",tickets:"I miei biglietti",sell:"Vendi",account:"Account",search:"Artista, evento o luogo",view:"Visualizza biglietti",directions:"Indicazioni",extras:"Extra",transfer:"Trasferisci",upgrade:"Upgrade"},
- nl:{discover:"Ontdekken",forYou:"Voor jou",tickets:"Mijn tickets",sell:"Verkopen",account:"Account",search:"Artiest, evenement of locatie",view:"Tickets bekijken",directions:"Routebeschrijving",extras:"Extra's",transfer:"Overdragen",upgrade:"Upgrade"},
- pt:{discover:"Descobrir",forYou:"Para você",tickets:"Meus ingressos",sell:"Vender",account:"Conta",search:"Artista, evento ou local",view:"Ver ingressos",directions:"Obter direções",extras:"Extras",transfer:"Transferir",upgrade:"Upgrade"},
- ja:{discover:"見つける",forYou:"あなたへ",tickets:"マイチケット",sell:"販売",account:"アカウント",search:"アーティスト、イベント、会場",view:"チケットを見る",directions:"道順",extras:"その他",transfer:"譲渡",upgrade:"アップグレード"},
- ko:{discover:"둘러보기",forYou:"추천",tickets:"내 티켓",sell:"판매",account:"계정",search:"아티스트, 이벤트 또는 장소",view:"티켓 보기",directions:"길찾기",extras:"추가",transfer:"양도",upgrade:"업그레이드"},
- zh:{discover:"发现",forYou:"为你",tickets:"我的门票",sell:"出售",account:"账户",search:"艺人、活动或场馆",view:"查看门票",directions:"获取路线",extras:"其他",transfer:"转让",upgrade:"升级"},
- ar:{discover:"اكتشف",forYou:"لك",tickets:"تذاكري",sell:"بيع",account:"الحساب",search:"الفنان أو الحدث أو المكان",view:"عرض التذاكر",directions:"الحصول على الاتجاهات",extras:"إضافات",transfer:"تحويل",upgrade:"ترقية"}
-};
+
 function clone(v){return JSON.parse(JSON.stringify(v))}
 function uid(p){return p+"-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8)}
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
 function el(id){return document.getElementById(id)}
+function q(s){return document.querySelector(s)}
 function qa(s){return [...document.querySelectorAll(s)]}
-function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
-function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||"null");return v&&typeof v==="object"?Object.assign(clone(defaultState),v):clone(defaultState)}catch(e){return clone(defaultState)}}
-let state=load();
-function country(){return countries.find(x=>x[0]===state.country)||countries[0]}
-function tr(k){return (I18N[country()[3]]||I18N.en)[k]||I18N.en[k]||k}
-function route(){return location.hash.replace(/^#/,"")||"/discover"}
-function go(r){location.hash=r}
-function img(u){return u||fallbackImage}
-function timeLabel(t){if(!t)return"";let[h,m]=String(t).split(":");h=+h||0;const ap=h>=12?"PM":"AM";h=h%12||12;return h+":"+String(m||"00").padStart(2,"0")+" "+ap}
-function dateLabel(d,t){if(!d)return"";const x=new Date(d+"T12:00:00");if(Number.isNaN(x.getTime()))return d;const loc=country()[3]==="de"?"de-DE":country()[3]==="ja"?"ja-JP":country()[3]==="ar"?"ar":country()[3]+"-"+country()[0];const day=x.toLocaleDateString(loc,{weekday:"short"}).toUpperCase();const mon=x.toLocaleDateString(loc,{month:"short"}).toUpperCase();const base=country()[0]==="US"?`${day} • ${mon} ${x.getDate()}, ${x.getFullYear()}`:`${day} • ${x.getDate()} ${mon} ${x.getFullYear()}`;return base+(t?" • "+timeLabel(t):"")}
-function setDirection(){document.documentElement.dir=country()[3]==="ar"?"rtl":"ltr"}
-function nav(active){
- const items=[[tr("discover"),"/discover","⌕"],[tr("forYou"),"/for-you","♥"],[tr("tickets"),"/my-tickets","◇"],[tr("sell"),"/sell","$"],[tr("account"),"/account","●"]];
- return `<nav class="bottom-nav">${items.map(([lab,path,ic])=>`<button class="nav-item ${active===path?"active":""}" onclick="go('${path}')"><span class="nav-icon">${ic}</span><span class="nav-label">${esc(lab)}</span>${path==="/account"?"<span class='nav-badge'>1</span>":""}</button>`).join("")}</nav>`
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function readSaved(){
+  const keys=[KEY,...LEGACY_KEYS];
+  for(const k of keys){
+    try{
+      const v=JSON.parse(localStorage.getItem(k)||"");
+      if(v&&typeof v==="object"){
+        if(Array.isArray(v.tickets)) return normalize(v);
+      }
+    }catch(e){}
+  }
+  return clone(defaultState);
 }
-function render(body,active){setDirection();el("app").innerHTML=`<div class="app"><div class="shell">${body}</div></div>${nav(active)}`}
-function toast(t){const n=document.createElement("div");n.className="toast";n.textContent=t;document.body.appendChild(n);setTimeout(()=>n.remove(),2100)}
-function showHelp(){toast("TicketWAVES demo")}
-function openModal(html){const m=el("modal");m.innerHTML=html;m.className="modal show";m.setAttribute("aria-hidden","false")}
-function closeModal(){const m=el("modal");m.innerHTML="";m.className="modal";m.setAttribute("aria-hidden","true")}
+function normalize(v){
+  const s=clone(defaultState);
+  s.country=v.country||"US";
+  s.tickets=Array.isArray(v.tickets)?v.tickets.map(t=>({
+    id:t.id||uid("event"),
+    eventName:t.eventName||"Your Event",
+    artistName:t.artistName||"",
+    venue:t.venue||"Your Venue",
+    location:t.location||"",
+    date:t.date||"",
+    time:t.time||"",
+    image:t.image||t.eventImage||FALLBACK,
+    mapQuery:t.mapQuery||t.venue||"",
+    order:t.order||t.orderNumber||"ORDER-000001",
+    extraInfo:t.extraInfo||"Mobile Ticket",
+    tickets:Array.isArray(t.tickets)?t.tickets.map(x=>({
+      id:x.id||uid("seat"),
+      section:x.section||"",
+      row:x.row||"",
+      seat:x.seat||"",
+      barcode:x.barcode||uid("code")
+    })):[],
+  })):clone(defaultState.tickets);
+  s.transfers=Array.isArray(v.transfers)?v.transfers:[]; 
+  s.profile=Object.assign({},clone(defaultState.profile),v.profile||v.user||{});
+  return s;
+}
+let state=readSaved();
+
+function route(){
+  const r=location.hash.replace(/^#/,"");
+  return r||"/my-tickets";
+}
+function go(r){
+  location.hash=r;
+}
+function currentCountry(){
+  return countries.find(c=>c[0]===state.country)||countries[0];
+}
+function dateLabel(d,t){
+  if(!d) return "";
+  const x=new Date(d+"T12:00:00");
+  if(Number.isNaN(x.getTime())) return d;
+  const day=x.toLocaleDateString(undefined,{weekday:"short"}).toUpperCase();
+  const mon=x.toLocaleDateString(undefined,{month:"short"}).toUpperCase();
+  return day+" • "+mon+" "+x.getDate()+", "+x.getFullYear()+(t?" • "+timeLabel(t):"");
+}
+function timeLabel(t){
+  if(!t)return "";
+  const [hh,mm]=(String(t).split(":").concat("00")).slice(0,2);
+  let h=Number(hh); const ap=h>=12?"PM":"AM"; h=h%12||12;
+  return h+":"+mm+" "+ap;
+}
+function img(url){return url||FALLBACK}
+function ticketGlyph(){return "▣"}
+
+function bottom(active){
+  const items=[
+    ["/discover","⌕","Discover"],["/for-you","♥","For You"],["/my-tickets","◇","My Tickets"],
+    ["/sell","$","Sell"],["/account","●","Account"]
+  ];
+  return '<nav class="bottom-nav">'+items.map(i=>
+    '<button class="nav-item '+(i[0]===active?"active":"")+'" onclick="go(\''+i[0]+'\')"><span class="nav-icon">'+i[1]+'</span><span class="nav-label">'+i[2]+'</span></button>'
+  ).join("")+"</nav>";
+}
+function header(title,back=true){
+  return '<header class="header"><div class="left">'+(back?'<button class="back" onclick="history.back()">‹</button>':'')+'</div><div class="title">'+esc(title)+'</div><div class="right"><button class="help" onclick="showHelp()">Help</button></div></header>';
+}
+function render(body,active){
+  el("app").innerHTML='<div class="app"><div class="shell">'+body+'</div>'+bottom(active)+'</div>';
+}
+function showHelp(){
+  alert("Need help? Use For You to edit your event and tickets.");
+}
+function toast(text){
+  const x=document.createElement("div");x.className="toast";x.textContent=text;document.body.appendChild(x);
+  setTimeout(()=>x.remove(),2200);
+}
+
 function myTickets(){
- const up=state.tickets.filter(t=>!t.date||new Date(t.date+"T23:59:59")>=new Date()).length;
- const past=state.tickets.length-up;
- const body=`<header class="header"><div class="left"></div><div class="title">My Events 🇺🇸</div><div class="right"><button class="help" onclick="showHelp()">Help</button></div></header>
- <div class="my-tabs"><button class="my-tab active">UPCOMING (${up})</button><button class="my-tab" onclick="showPast()">PAST (${past})</button></div>
- <div class="event-list">${state.tickets.filter(t=>!t.date||new Date(t.date+"T23:59:59")>=new Date()).map(eventCardLarge).join("")||`<div style="padding:50px 20px;text-align:center"><h2>No tickets yet</h2><p>Add your first event from For You.</p></div>`}</div>`;
- render(body,"/my-tickets")
+  const upcoming=state.tickets.filter(t=>new Date((t.date||"9999-12-31")+"T23:59:59")>=new Date());
+  const past=state.tickets.filter(t=>!upcoming.includes(t));
+  return render(
+    header("My Events",false)+
+    '<div class="subnav"><button class="subtab active">UPCOMING ('+upcoming.length+')</button><button class="subtab" onclick="showPast()">PAST ('+past.length+')</button></div>'+
+    '<div class="event-list">'+(upcoming.length?upcoming.map(eventCard).join(""):'<div class="empty"><h2>No upcoming events</h2><p>Add one from For You.</p></div>')+'</div>',
+    "/my-tickets"
+  );
 }
 function showPast(){
- const past=state.tickets.filter(t=>t.date&&new Date(t.date+"T23:59:59")<new Date());
- const up=state.tickets.length-past.length;
- render(`<header class="header"><div class="left"></div><div class="title">My Events 🇺🇸</div><div class="right"><button class="help" onclick="showHelp()">Help</button></div></header><div class="my-tabs"><button class="my-tab" onclick="myTickets()">UPCOMING (${up})</button><button class="my-tab active">PAST (${past.length})</button></div><div class="event-list">${past.map(eventCardLarge).join("")||`<div style="padding:50px 20px;text-align:center"><h2>No past events</h2></div>`}</div>`,"/my-tickets")
+  const past=state.tickets.filter(t=>new Date((t.date||"1900-01-01")+"T23:59:59")<new Date());
+  render(
+    header("My Events",false)+
+    '<div class="subnav"><button class="subtab" onclick="myTickets()">UPCOMING ('+state.tickets.filter(t=>new Date((t.date||"9999-12-31")+"T23:59:59")>=new Date()).length+')</button><button class="subtab active">PAST ('+past.length+')</button></div>'+
+    '<div class="event-list">'+(past.length?past.map(eventCard).join(""):'<div class="empty"><h2>No past events</h2><p>Your past events will appear here.</p></div>')+'</div>',
+    "/my-tickets"
+  );
 }
-function eventCardLarge(g){
- return `<article class="event-card-large" onclick="go('/event/${encodeURIComponent(g.id)}')"><img src="${esc(img(g.image))}" alt=""><div class="info"><div class="date">${esc(dateLabel(g.date,g.time))}</div><h2>${esc((g.eventName||"").toUpperCase())}</h2><div class="rule"></div><div class="venue">${esc(g.venue)}${g.location?" - "+esc(g.location):""}</div></div></article>`
+function eventCard(g){
+  return '<article class="event-card">'+
+    '<img src="'+esc(img(g.image))+'" alt="">'+
+    '<div class="shade"></div>'+
+    '<div class="event-copy">'+
+      '<div class="event-date">'+esc(dateLabel(g.date,g.time))+'</div>'+
+      '<div class="event-title">'+esc(g.eventName)+'</div>'+
+      '<div class="event-venue">'+esc(g.venue)+(g.location?" • "+esc(g.location):"")+'</div>'+
+    '</div>'+
+    '<button class="view-button" onclick="go(\'/event/'+encodeURIComponent(g.id)+'\')"><span class="small-icon">'+ticketGlyph()+'</span>View Tickets</button>'+
+  '</article>';
 }
+
 function eventPage(id){
- const g=state.tickets.find(x=>x.id===decodeURIComponent(id));
- if(!g){go("/for-you");return}
- const count=Math.max(1,g.tickets?.length||0);let title=(g.eventName||"").toUpperCase();let tail="";const m=title.match(/^(.*?)(?:\s+IN TORONTO)$/);if(m){title=m[1];tail="IN TORONTO"}
- const body=`<main class="tm-page">
- <section class="tm-top"><img class="tm-top-image" src="${esc(img(g.image))}" alt=""><button class="tm-back" onclick="go('/my-tickets')">‹</button><span class="tm-help">Help</span><button class="tm-menu" onclick="eventMenu('${encodeURIComponent(g.id)}')">•••</button></section>
- <section class="tm-stack"><div class="tm-info"><div class="tm-date">${esc(dateLabel(g.date,g.time))}</div><div class="tm-title">${esc(title)}${tail?"<br>"+esc(tail):""}</div><div class="tm-bottom-row"><div class="tm-venue">${esc(g.venue)}${g.location?" - "+esc(g.location):""}</div><div class="tm-count"><span class="tm-card-icon"></span><span>x${count}</span></div></div></div>
- <button class="tm-barcode-btn" onclick="viewTickets('${encodeURIComponent(g.id)}')"><span class="tm-barcode-icon"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span>${tr("view")}</span></button></section>
- <section class="tm-tabs"><button class="tm-tab active" onclick="selectTab(0)">${tr("tickets")}</button><button class="tm-tab" onclick="selectTab(1)">${tr("extras")}</button></section>
- <section class="tm-order"><div class="tm-order-head"><div><div class="tm-order-number">Order #${esc(g.order||"")}</div><div class="tm-order-sub">x${count} Ticket${count===1?"":"s"}</div></div><button class="tm-order-more" onclick="eventMenu('${encodeURIComponent(g.id)}')">⋮</button></div>
- ${(g.tickets||[]).map((t,i)=>ticketCard(g,t,i)).join("")}
- <div class="tm-more-heading">MORE OPTIONS</div>
- <div class="tm-map"><iframe loading="lazy" title="Venue map" src="https://www.openstreetmap.org/export/embed.html?bbox=-79.43%2C43.63%2C-79.32%2C43.72&layer=mapnik"></iframe></div>
- <div class="tm-actions"><button disabled>${tr("upgrade")}</button><button onclick="openTransfer('${encodeURIComponent(g.id)}')">${tr("transfer")}</button><button onclick="startSell('${encodeURIComponent(g.id)}')">${tr("sell")}</button></div>
- <a class="tm-directions" target="_blank" rel="noopener" href="${mapHref(g)}">${tr("directions")}</a></section>
- <section class="tm-extras"><div class="tm-extra-title">${tr("extras")}</div><div class="got-card"><div class="got-visual"><img src="${esc(img(g.image))}" alt=""><div class="got-word">YOU GOT<br>TICKETS!</div></div><div class="share"><h3>Post on Social Media</h3><p>Build excitement for the event and let your friends and family know you're attending.</p><button class="primary" onclick="shareEvent('${encodeURIComponent(g.id)}')">Share You're Going</button></div></div></section>
- </main>`;
- render(body,"/my-tickets")
+  const g=state.tickets.find(x=>x.id===decodeURIComponent(id));
+  if(!g){go("/my-tickets");return}
+  const count=g.tickets.length;
+  return render(
+    header("",true)+
+    '<main class="content">'+
+      '<section class="hero">'+
+        '<img src="'+esc(img(g.image))+'" alt="">'+
+        '<div class="hero-shade"></div>'+
+        '<div class="hero-info">'+
+          '<div class="hero-date">'+esc(dateLabel(g.date,g.time))+'</div>'+
+          '<div class="hero-name">'+esc(g.eventName)+'</div>'+
+          '<div class="hero-meta">'+esc(g.venue)+(g.location?" • "+esc(g.location):"")+'</div>'+
+        '</div>'+
+        '<div class="hero-count">'+ticketGlyph()+' x'+count+'</div>'+
+      '</section>'+
+      '<div class="ticket-action"><button onclick="viewTickets(\''+encodeURIComponent(g.id)+'\')">▣ View Tickets</button></div>'+
+      '<section class="order">'+
+        '<div class="order-head"><div><div class="order-num">Order #'+esc(g.order)+'</div><div class="order-sub">x'+count+' Ticket'+(count===1?"":"s")+'</div></div><button class="dots" onclick="eventMenu(\''+encodeURIComponent(g.id)+'\')">⋮</button></div>'+
+        g.tickets.map((t,i)=>ticketCard(g,t,i)).join("")+
+        '<div class="more-options">MORE OPTIONS</div>'+
+        '<div class="map"><iframe loading="lazy" title="Map" src="https://www.openstreetmap.org/export/embed.html?bbox=-79.43%2C43.63%2C-79.32%2C43.72&layer=mapnik"></iframe></div>'+
+        '<div class="map-actions">'+
+          '<button onclick="toast(\'Upgrade options\')">↥ Upgrade</button>'+
+          '<button onclick="openTransfer(\''+encodeURIComponent(g.id)+'\')">↗ Transfer</button>'+
+          '<button onclick="startSell(\''+encodeURIComponent(g.id)+'\')">⟳ Sell</button>'+
+        '</div>'+
+        '<a class="directions" target="_blank" rel="noopener" href="https://www.openstreetmap.org/search?query='+encodeURIComponent((g.mapQuery||g.venue+" "+g.location)||"venue")+'">Get Directions</a>'+
+      '</section>'+
+      '<section class="extras">'+
+        '<h2>EXTRAS</h2>'+
+        '<div class="got-card">'+
+          '<div class="got-visual"><img src="'+esc(img(g.image))+'" alt=""><div class="got-word">YOU GOT<br>TICKETS!</div></div>'+
+          '<div class="share"><h3>Post on Social Media</h3><p>Build hype for the event, and share that you got tickets with your friends and family.</p><button onclick="shareEvent(\''+encodeURIComponent(g.id)+'\')">Share You’re Going ↗</button></div>'+
+        '</div>'+
+      '</section>'+
+    '</main>',
+    "/my-tickets"
+  );
 }
-function mapHref(g){const q=encodeURIComponent((g.mapQuery||`${g.venue||""} ${g.location||""}`).trim());return /iPhone|iPad|iPod/i.test(navigator.userAgent)?`https://maps.apple.com/?q=${q}`:`https://www.google.com/maps/search/?api=1&query=${q}`}
 function ticketCard(g,t,i){
- const p=state.transfers.find(x=>x.eventId===g.id&&x.ticketIndex===i&&x.status==="pending");
- return `<div class="ticket-card"><div class="ticket-head">${esc(g.ticketType||g.extraInfo||"Mobile Ticket")}</div><div class="seats"><div><div class="seat-label">SECTION</div><div class="seat-value">${esc(t.section||"—")}</div></div><div><div class="seat-label">ROW</div><div class="seat-value">${esc(t.row||"—")}</div></div><div><div class="seat-label">SEAT</div><div class="seat-value">${esc(t.seat||"—")}</div></div></div>${p?`<div class="pending"><span>↗ Transfer Pending: ${esc(p.firstName+" "+p.lastName)}</span><button onclick="cancelTransfer('${encodeURIComponent(g.id)}',${i})">Cancel</button></div>`:""}</div>`
+  const p=state.transfers.find(x=>x.eventId===g.id&&x.ticketIndex===i&&x.status==="pending");
+  return '<div class="ticket-card"><div class="ticket-head">'+esc(g.extraInfo||"TICKET")+'</div>'+
+    '<div class="seats"><div><div class="seat-label">SECTION</div><div class="seat-value">'+esc(t.section||"—")+'</div></div>'+
+    '<div><div class="seat-label">ROW</div><div class="seat-value">'+esc(t.row||"—")+'</div></div>'+
+    '<div><div class="seat-label">SEAT</div><div class="seat-value">'+esc(t.seat||"—")+'</div></div></div>'+
+    (p?'<div class="pending"><span>↗ Transfer Pending: '+esc(p.firstName+" "+p.lastName)+'</span><button onclick="cancelTransfer(\''+encodeURIComponent(g.id)+'\','+i+')">Cancel</button></div>':"")+
+  '</div>';
 }
-function selectTab(i){qa(".tm-tab").forEach((b,n)=>b.classList.toggle("active",n===i));if(i===1)document.querySelector(".tm-extras")?.scrollIntoView({behavior:"smooth"})}
+
 function viewTickets(id){
- const g=state.tickets.find(x=>x.id===decodeURIComponent(id));if(!g)return;
- let idx=0;const draw=()=>{const t=g.tickets[idx]||{};openModal(`<div class="entry-full"><div class="entry-bar"><button class="entry-back" onclick="closeModal()">‹</button><span>View Ticket</span><button class="entry-dots">•••</button></div><div class="entry-image"><img src="${esc(img(g.image))}" alt=""></div><div class="entry-summary"><div class="entry-title">${esc(g.eventName||"")}</div><div class="entry-date">${esc(dateLabel(g.date,g.time))}</div><div class="entry-venue">${esc(g.venue)}${g.location?" - "+esc(g.location):""}</div></div><div class="entry-seats"><div><small>SECTION</small><strong>${esc(t.section||"—")}</strong></div><div><small>ROW</small><strong>${esc(t.row||"—")}</strong></div><div><small>SEAT</small><strong>${esc(t.seat||"—")}</strong></div></div><div class="entry-demo-note">SCHOOL DEMO • BARCODE SIMULATION</div><div class="entry-live-code"><span class="scan"></span></div><div class="entry-code">${esc(t.barcode||uid("code"))}</div><div class="entry-position">${idx+1} of ${g.tickets.length}</div><div class="entry-arrows"><button onclick="__prev()">‹</button><button onclick="__next()">›</button></div><button class="wallet-btn" onclick="toast('Wallet placeholder ready')">Add to Wallet</button><div class="entry-footer"><button onclick="closeModal()">Done</button><button onclick="openTransfer('${encodeURIComponent(g.id)}')">Transfer</button><button onclick="startSell('${encodeURIComponent(g.id)}')">Sell</button></div></div>`)}
- window.__prev=()=>{if(idx>0){idx--;draw()}};window.__next=()=>{if(idx<g.tickets.length-1){idx++;draw()}};draw()
+  const g=state.tickets.find(x=>x.id===decodeURIComponent(id));
+  if(!g)return;
+  const m=el("modal");
+  const cards=g.tickets.map((t,i)=>
+    '<div class="entry-card"><div class="entry-blue">'+
+      '<div class="entry-name">'+esc(g.eventName)+'</div>'+
+      '<div class="entry-grid"><div><span>SEC</span><strong>'+esc(t.section||"—")+'</strong></div><div><span>ROW</span><strong>'+esc(t.row||"—")+'</strong></div><div><span>SEAT</span><strong>'+esc(t.seat||"—")+'</strong></div></div>'+
+      '<div class="entry-venue">'+esc(g.venue)+(g.location?" • "+esc(g.location):"")+'</div>'+
+    '</div><div class="barcode"></div><div class="barcode-number">'+esc(t.barcode||g.order||"")+'</div><button class="wallet" onclick="toast(\'Wallet action ready to connect\')">Add to Wallet</button><div class="qr-note">Entry code appears only in View Tickets.</div></div>'
+  ).join("");
+  m.innerHTML='<div class="sheet"><div class="sheet-handle"></div><div class="sheet-head"><span>'+g.tickets.length+' Ticket'+(g.tickets.length===1?"":"s")+'</span><button class="close" onclick="closeModal()">Done</button></div><div class="entry-wrap">'+cards+'</div></div>';
+  m.classList.add("show");m.setAttribute("aria-hidden","false");
 }
-function eventMenu(id){const g=state.tickets.find(x=>x.id===decodeURIComponent(id));openModal(`<div class="sheet"><div class="sheet-handle"></div><div class="sheet-head"><span>Event Options</span><button onclick="closeModal()">Close</button></div><div class="sheet-body"><button class="primary" style="width:100%" onclick="closeModal();editEvent('${encodeURIComponent(g.id)}')">Edit Event</button><button class="secondary" style="width:100%;margin-top:10px" onclick="deleteEvent('${encodeURIComponent(g.id)}')">Delete Event</button></div></div>`)}
-function deleteEvent(id){if(!confirm("Delete this event?"))return;state.tickets=state.tickets.filter(t=>t.id!==decodeURIComponent(id));save();closeModal();go("/my-tickets")}
-async function shareEvent(id){const g=state.tickets.find(x=>x.id===decodeURIComponent(id));if(!g)return;const text=`I'm going to ${g.eventName} at ${g.venue}.`;if(navigator.share){try{await navigator.share({title:g.eventName,text})}catch(e){}}else{navigator.clipboard?.writeText(text);toast("Share text copied")}}
-function startSell(id){const d=id?decodeURIComponent(id):"";if(d)go("/sell/select/"+encodeURIComponent(d));else toast("Select a ticket")}
-function sellPage(){render(`<section class="sell-hero"><div class="sell-art">↔</div><h1>SELL TICKETS</h1><p>List eligible tickets, manage listings, review completed sales and expired listings.</p><div class="dots">● ○</div><button class="outline" onclick="toast('Eligibility details')">Learn How It Works</button><button class="primary" onclick="go('/sell/select')">Sell Your Tickets</button></section><section class="manage"><div class="manage-card"><h3>Tickets I'm Selling</h3><p>${state.listings.filter(x=>x.status==="active").length} active listing(s)</p></div><div class="manage-card"><h3>Sold Tickets</h3><p>${state.listings.filter(x=>x.status==="sold").length} sold listing(s)</p></div><div class="manage-card"><h3>Expired Tickets</h3><p>${state.listings.filter(x=>x.status==="expired").length} expired listing(s)</p></div></section>`,"/sell")}
-function sellSelect(id){const eventId=decodeURIComponent(id||"");const arr=state.tickets.flatMap(g=>(g.tickets||[]).map((t,i)=>({g,t,i}))).filter(x=>!eventId||x.g.id===eventId);render(`<header class="header"><div class="left"><button class="back" onclick="go('/sell')">‹</button></div><div class="title">Sell Your Tickets</div><div class="right"></div></header><div class="form">${arr.length?arr.map(x=>`<div class="seat-editor"><div><strong>${esc(x.g.eventName)}</strong></div><div style="margin-top:7px">Section ${esc(x.t.section||"—")} • Row ${esc(x.t.row||"—")} • Seat ${esc(x.t.seat||"—")}</div><button class="primary" style="width:100%;margin-top:12px" onclick="createListing('${encodeURIComponent(x.g.id)}',${x.i})">List Ticket</button></div>`).join(""):`<p>No eligible tickets yet.</p>`}</div>`,"/sell")}
-function createListing(eid,i){state.listings.push({id:uid("listing"),eventId:decodeURIComponent(eid),ticketIndex:i,status:"active",price:""});save();toast("Ticket listed");go("/sell")}
-function discover(){const g=state.tickets[0];render(`<section class="discover"><div class="discover-head"><div class="discover-top"><span class="brand-word">TicketWAVES</span><button class="country-btn" onclick="countrySheet()">${country()[1]}</button></div><div class="filters"><div class="filter"><span class="filter-icon">⌖</span><div><div class="filter-title">LOCATION</div><div class="filter-sub">City or Zip Code</div></div><span class="filter-chev">⌄</span></div><span class="filter-divider"></span><div class="filter"><span class="filter-icon">◫</span><div><div class="filter-title">DATES</div><div class="filter-sub">All Dates</div></div><span class="filter-chev">⌄</span></div></div><div class="search-box"><div class="search-label">SEARCH</div><div class="search-placeholder">${esc(tr("search"))}</div><span class="search-symbol">⌕</span></div><div class="cats"><button class="cat">Concerts</button><button class="cat">Sports</button><button class="cat active">Arts, Theater & Comedy</button></div></div><div class="feature"><img src="${esc(img(g?.image))}" alt=""><div class="feature-copy"><h1>${esc(g?.eventName||"Find your next live event")}</h1><button class="primary" onclick="${g?`go('/event/${encodeURIComponent(g.id)}')`:`go('/for-you')`}">${tr("view")}</button></div></div><div class="white-area">${g?`<article class="card-event" onclick="go('/event/${encodeURIComponent(g.id)}')"><img src="${esc(img(g.image))}" alt=""><div class="card-event-copy"><h3>${esc(g.eventName)}</h3><p>${esc(g.venue)}${g.location?" • "+esc(g.location):""}</p></div></article>`:`<div style="padding:20px 16px"><h2>Add an event</h2><p>Use For You to create your first ticket collection.</p></div>`}</div></section>`,"/discover")}
-function forYou(editId){
- const g=editId?state.tickets.find(t=>t.id===decodeURIComponent(editId)):null;
- const data=g||{eventName:"",artistName:"",tourName:"",date:"",time:"",venue:"",location:"",ticketType:"",entryInfo:"",purchaseDate:"",notes:"",image:"",mapQuery:"",order:"",country:state.country,tickets:[{id:uid("seat"),section:"",row:"",seat:"",barcode:""}]};
- render(`<div class="fy-head"><h1>${g?"Edit Event":"Add Ticket"}</h1><p>All ticket information is stored locally and stays synchronized across the app.</p></div><form class="form" onsubmit="saveEvent(event,'${g?encodeURIComponent(g.id):""}')"><div class="upload-box"><input id="eventFile" type="file" accept="image/*" onchange="previewImage(event)"><div id="imagePreview">${data.image?`<img src="${esc(data.image)}" alt="">`:""}</div></div>
- ${field("fName","Event Name",data.eventName,true)}${field("fArtist","Artist Name",data.artistName,true)}${field("fTour","Tour Name",data.tourName)}${field("fDate","Event Date",data.date,true,"date")}${field("fTime","Event Time",data.time,true,"time")}${field("fVenue","Venue",data.venue,true)}${field("fLocation","Location",data.location,true)}${field("fTicketType","Ticket Type",data.ticketType,true)}${field("fEntry","Entry Information",data.entryInfo)}${field("fPurchase","Purchase Date",data.purchaseDate,"", "date")}${field("fMap","Map Search",data.mapQuery)}${field("fOrder","Order Number",data.order)}${field("fNotes","Ticket Notes",data.notes,false,"textarea")}${field("fImage","Event Image URL",data.image)}<div class="field"><label>Tickets / Seats</label><div id="seatEditors">${data.tickets.map(seatEditor).join("")}</div><button type="button" class="secondary add-seat" onclick="addSeat()">+ Add Another Ticket</button></div><button class="primary" style="width:100%" type="submit">Add ${data.tickets.length} Ticket${data.tickets.length===1?"":"s"}</button>${g?`<button type="button" class="secondary" style="width:100%;margin-top:10px" onclick="deleteEvent('${encodeURIComponent(g.id)}')">Delete Event</button>`:""}</form>`,"/for-you")}
-function field(id,label,val,req,type="text"){const isTA=type==="textarea";return `<div class="field"><label>${label}${req?"*":""}</label>${isTA?`<textarea id="${id}" class="textarea">${esc(val||"")}</textarea>`:`<input id="${id}" class="input" ${req?"required":""} type="${type}" value="${esc(val||"")}">`}</div>`}
-function seatEditor(t){return `<div class="seat-editor" data-seat="${esc(t.id||uid("seat"))}"><button type="button" class="remove" onclick="this.parentElement.remove()">Remove</button>${field("", "Section",t.section,true)}${field("", "Row",t.row,true)}${field("", "Seat",t.seat,true)}${field("", "Barcode / QR Code",t.barcode)}</div>`}
-function addSeat(){el("seatEditors")?.insertAdjacentHTML("beforeend",seatEditor({id:uid("seat"),section:"",row:"",seat:"",barcode:""}));syncAddButton()}
-function syncAddButton(){const n=qa(".seat-editor").length;const b=document.querySelector('form button[type="submit"]');if(b)b.textContent=`Add ${n} Ticket${n===1?"":"s"}`}
-function previewImage(e){const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{window.__pickedImage=r.result;const p=el("imagePreview");if(p)p.innerHTML=`<img src="${r.result}" alt="">`};r.readAsDataURL(f)}
-function saveEvent(e,id){e.preventDefault();const seats=qa(".seat-editor").map(x=>({id:x.dataset.seat||uid("seat"),section:x.querySelectorAll(".input")[0]?.value.trim()||"",row:x.querySelectorAll(".input")[1]?.value.trim()||"",seat:x.querySelectorAll(".input")[2]?.value.trim()||"",barcode:x.querySelectorAll(".input")[3]?.value.trim()||uid("code")}));if(!seats.every(s=>s.section&&s.row&&s.seat)){toast("Complete Section, Row and Seat");return}const data={eventName:el("fName").value.trim(),artistName:el("fArtist").value.trim(),tourName:el("fTour").value.trim(),date:el("fDate").value,time:el("fTime").value,venue:el("fVenue").value.trim(),location:el("fLocation").value.trim(),ticketType:el("fTicketType").value.trim(),entryInfo:el("fEntry").value.trim(),purchaseDate:el("fPurchase").value,mapQuery:el("fMap").value.trim(),order:el("fOrder").value.trim()||uid("order"),notes:el("fNotes").value.trim(),image:window.__pickedImage||el("fImage").value.trim()||fallbackImage,tickets:seats};if(id){const i=state.tickets.findIndex(t=>t.id===decodeURIComponent(id));if(i>=0)state.tickets[i]=Object.assign({id:decodeURIComponent(id)},data)}else state.tickets.push(Object.assign({id:uid("event")},data));window.__pickedImage=null;save();go("/my-tickets")}
-function editEvent(id){go("/for-you/edit/"+id)}
-function account(){render(`<header class="header"><div class="left"></div><div class="title">Account</div><div class="right"></div></header><div class="account-user row"><div><img class="avatar" id="avatar" src="${esc(state.profile.photo||"")}"></div><div class="account-name"><h2>${esc((state.profile.firstName+" "+state.profile.lastName).trim()||"Your Name")}</h2><p>${esc(state.profile.email||"Add email")}</p></div></div><section class="settings"><div class="setting-title">PROFILE</div>${settingInput("First Name","pFirst",state.profile.firstName)}${settingInput("Last Name","pLast",state.profile.lastName)}${settingInput("Email","pEmail",state.profile.email)}${settingInput("Phone","pPhone",state.profile.phone)}<div class="field"><label>Profile Picture</label><input id="profileFile" type="file" accept="image/*" onchange="previewProfile(event)"></div><button class="primary" style="width:100%" onclick="saveProfile()">Save Details</button><div class="setting-title">NOTIFICATIONS</div><div class="setting-row"><span class="label">Receive Notifications</span><button class="toggle ${state.profile.notifications?"on":""}" onclick="toggleSetting('notifications')"><i></i></button></div><div class="setting-title">LOCATION</div><div class="setting-row" onclick="toast('Location settings')"><span class="label">My Location</span><span>${esc(state.profile.city||"Set location")} ›</span></div><div class="setting-row" onclick="countrySheet()"><span class="label">My Country</span><span>${country()[1]} ${esc(country()[2])} ›</span></div><div class="setting-row"><span class="label">Location Based Content</span><button class="toggle ${state.profile.locationBased?"on":""}" onclick="toggleSetting('locationBased')"><i></i></button></div><div class="setting-title">PREFERENCES</div><div class="setting-row" onclick="toast('Favorites')"><span class="label">My Favourites</span><span>›</span></div><div class="setting-row" onclick="toast('Security settings')"><span class="label">Security</span><span>›</span></div><div class="setting-row" onclick="toast('Accessibility')"><span class="label">Theme & Accessibility</span><span>›</span></div></section>`,"/account")}
-function settingInput(label,id,val){return `<div class="field"><label>${label}</label><input class="input" id="${id}" value="${esc(val||"")}"></div>`}
-function previewProfile(e){const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{state.profile.photo=r.result;const a=el("avatar");if(a)a.src=r.result};r.readAsDataURL(f)}
-function saveProfile(){state.profile.firstName=el("pFirst").value.trim();state.profile.lastName=el("pLast").value.trim();state.profile.email=el("pEmail").value.trim();state.profile.phone=el("pPhone").value.trim();save();toast("Profile saved");account()}
-function toggleSetting(k){state.profile[k]=!state.profile[k];save();account()}
+function closeModal(){const m=el("modal");m.className="modal";m.innerHTML="";m.setAttribute("aria-hidden","true")}
+function eventMenu(id){
+  const g=state.tickets.find(x=>x.id===decodeURIComponent(id));
+  if(!g)return;
+  const m=el("modal");
+  m.innerHTML='<div class="sheet"><div class="sheet-handle"></div><div class="sheet-head"><span>Event Options</span><button class="close" onclick="closeModal()">Close</button></div><div class="sheet-body"><button class="primary" onclick="editEvent(\''+encodeURIComponent(g.id)+'\');closeModal()">Edit Event</button><button class="secondary" onclick="deleteEvent(\''+encodeURIComponent(g.id)+'\')">Delete Event</button></div></div>';
+  m.classList.add("show");
+}
+function deleteEvent(id){
+  const d=decodeURIComponent(id);
+  if(!confirm("Delete this event?"))return;
+  state.tickets=state.tickets.filter(t=>t.id!==d);save();closeModal();go("/my-tickets");
+}
+function shareEvent(id){
+  const g=state.tickets.find(x=>x.id===decodeURIComponent(id));if(!g)return;
+  const text="I got tickets for "+g.eventName+"!";
+  if(navigator.share){navigator.share({title:g.eventName,text}).catch(()=>{})}
+  else {navigator.clipboard?.writeText(text).then(()=>toast("Share text copied")); }
+}
+
 function openTransfer(id){
- const g=state.tickets.find(x=>x.id===decodeURIComponent(id));if(!g)return;
- const opts=(g.tickets||[]).map((t,i)=>`<option value="${i}">Ticket ${i+1} — ${esc(t.section||"—")} / ${esc(t.row||"—")} / ${esc(t.seat||"—")}</option>`).join("");
- openModal(`<div class="sheet"><div class="sheet-handle"></div><div class="sheet-head"><span>TRANSFER TICKETS</span><button onclick="closeModal()">Done</button></div><div class="sheet-body"><div class="field"><label>Select Ticket</label><select id="trTicket" class="select">${opts}</select></div>${field("trFirst","First Name","",true)}${field("trLast","Last Name","",true)}${field("trEmail","Email Address","",true)}<div class="field"><label>Use Mobile Number Instead</label><button class="secondary" style="width:100%" onclick="toast('Mobile option')">Use Mobile Number</button></div>${field("trNote","Note","","", "textarea")}</div><div class="transfer-actions"><button class="secondary" onclick="closeModal()">Back</button><button id="forwardBtn" class="primary" onclick="submitTransfer('${encodeURIComponent(g.id)}')">Forward Ticket</button></div></div>`);
+  const g=state.tickets.find(x=>x.id===decodeURIComponent(id));if(!g)return;
+  const m=el("modal");
+  const options=g.tickets.map((t,i)=>'<option value="'+i+'">Ticket '+(i+1)+' — Section '+esc(t.section||"—")+' / Row '+esc(t.row||"—")+' / Seat '+esc(t.seat||"—")+'</option>').join("");
+  m.innerHTML='<div class="sheet"><div class="sheet-handle"></div><div class="sheet-head"><span>TRANSFER TICKETS</span><button class="close" onclick="closeModal()">Done</button></div>'+
+    '<div class="sheet-body"><div class="transfer-row"><label>SELECT TICKET</label><select id="trTicket" class="select">'+options+'</select></div>'+
+    '<div class="transfer-row"><label>FIRST NAME*</label><input id="trFirst" class="input" placeholder="Enter First Name"></div>'+
+    '<div class="transfer-row"><label>LAST NAME*</label><input id="trLast" class="input" placeholder="Enter Last Name"></div>'+
+    '<div class="transfer-row"><label>EMAIL*</label><input id="trEmail" class="input" type="email" placeholder="Enter Email Address"></div>'+
+    '<div class="transfer-row"><label>NOTE</label><textarea id="trNote" class="textarea" placeholder="Add a note"></textarea></div></div>'+
+    '<div class="transfer-actions"><button class="back-btn" onclick="closeModal()">Back</button><button id="forwardBtn" class="forward-btn" onclick="submitTransfer(\''+encodeURIComponent(g.id)+'\')">Forward Ticket</button></div></div>';
+  m.classList.add("show");
+  ["trFirst","trLast","trEmail"].forEach(x=>el(x).addEventListener("input",transferReady));
+  transferReady();
 }
-function submitTransfer(id){const g=state.tickets.find(x=>x.id===decodeURIComponent(id));if(!g)return;const first=el("trFirst").value.trim(),last=el("trLast").value.trim(),email=el("trEmail").value.trim(),idx=+el("trTicket").value||0;if(!first||!last||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast("Enter valid recipient details");return}state.transfers.push({id:uid("transfer"),eventId:g.id,ticketIndex:idx,firstName:first,lastName:last,email,note:el("trNote").value,status:"pending",createdAt:new Date().toISOString()});save();closeModal();go("/event/"+encodeURIComponent(g.id));toast("Transfer Pending")}
-function cancelTransfer(id,i){state.transfers=state.transfers.filter(x=>!(x.eventId===decodeURIComponent(id)&&x.ticketIndex===i&&x.status==="pending"));save();go("/event/"+decodeURIComponent(id));toast("Transfer cancelled")}
-function countrySheet(){openModal(`<div class="sheet"><div class="sheet-handle"></div><div class="sheet-head"><span>Change Location</span><button onclick="closeModal()">Done</button></div><div class="sheet-body sheet-list">${countries.map(c=>`<button class="country-row" style="width:100%;text-align:left" onclick="chooseCountry('${c[0]}')"><span class="flag">${c[1]}</span><span>${esc(c[2])}</span>${c[0]===state.country?"<span class='check'>✓</span>":""}</button>`).join("")}</div></div>`)}
-function chooseCountry(code){const c=countries.find(x=>x[0]===code);if(!c)return;state.country=code;state.profile.language=c[3];state.profile.currency=c[4];save();closeModal();main()}
-function browserTicket(id){const [eid,si]=decodeURIComponent(id).split("|");const g=state.tickets.find(x=>x.id===eid);if(!g)return;const t=g.tickets[+si||0];render(`<div class="browser-ticket"><div class="hero"><img src="${esc(img(g.image))}" alt=""></div><h1>${esc(g.eventName)}</h1><p>${esc(g.venue)}${g.location?" • "+esc(g.location):""}</p><div class="browser-grid"><div><small>SECTION</small><strong>${esc(t.section||"—")}</strong></div><div><small>ROW</small><strong>${esc(t.row||"—")}</strong></div><div><small>SEAT</small><strong>${esc(t.seat||"—")}</strong></div></div><p><strong>Order:</strong> ${esc(g.order||"")}</p><p><strong>Status:</strong> Valid demo ticket</p><div class="browser-actions"><a class="primary" style="display:grid;place-items:center;text-decoration:none" href="${mapHref(g)}">Get Directions</a><button class="secondary" onclick="shareEvent('${encodeURIComponent(g.id)}')">Share</button></div></div>`,null)}
-function main(){const r=route();if(r==="/discover")discover();else if(r==="/for-you")forYou();else if(r.startsWith("/for-you/edit/"))forYou(r.slice("/for-you/edit/".length));else if(r==="/my-tickets")myTickets();else if(r==="/sell")sellPage();else if(r.startsWith("/sell/select"))sellSelect(r.split("/")[3]||"");else if(r==="/account")account();else if(r.startsWith("/event/"))eventPage(r.slice("/event/".length));else if(r.startsWith("/ticket/"))browserTicket(r.slice("/ticket/".length));else discover()}
-Object.assign(window,{go,main,myTickets,showPast,viewTickets,closeModal,eventMenu,deleteEvent,shareEvent,openTransfer,submitTransfer,cancelTransfer,startSell,discover,forYou,addSeat,previewImage,saveEvent,editEvent,account,saveProfile,toggleSetting,countrySheet,chooseCountry,selectTab,showHelp,sellPage,sellSelect,createListing});
+function transferReady(){
+  const ok=el("trFirst")?.value.trim()&&el("trLast")?.value.trim()&&el("trEmail")?.value.trim();
+  el("forwardBtn")?.classList.toggle("ready",!!ok);
+}
+function submitTransfer(id){
+  const g=state.tickets.find(x=>x.id===decodeURIComponent(id));if(!g)return;
+  const first=el("trFirst")?.value.trim(),last=el("trLast")?.value.trim(),email=el("trEmail")?.value.trim(),idx=Number(el("trTicket")?.value||0);
+  if(!first||!last||!email){toast("Complete the required fields");return}
+  state.transfers=state.transfers.filter(x=>!(x.eventId===g.id&&x.ticketIndex===idx&&x.status==="pending"));
+  state.transfers.push({id:uid("transfer"),eventId:g.id,ticketId:g.tickets[idx]?.id||"",ticketIndex:idx,firstName:first,lastName:last,email,note:el("trNote")?.value||"",status:"pending"});
+  save();closeModal();go("/event/"+encodeURIComponent(g.id));toast("Transfer Pending");
+}
+function cancelTransfer(id,i){
+  const d=decodeURIComponent(id);
+  state.transfers=state.transfers.filter(x=>!(x.eventId===d&&x.ticketIndex===i&&x.status==="pending"));
+  save();eventPage(d);
+}
+function startSell(id){
+  const g=state.tickets.find(x=>x.id===decodeURIComponent(id));if(!g)return;
+  toast("Sell flow ready for connection");
+}
+
+function discover(){
+  render(header("Discover",false)+'<main class="content"><div class="discover-hero"><input class="search" id="discoverSearch" placeholder="Artist, Event or Venue"></div>'+
+    '<div class="list-card"><h3>Find your next event</h3><p>Browse events and use For You to create or edit your ticket details.</p></div></main>',"/discover");
+  const box=el("discoverSearch");
+  if(box) box.addEventListener("keydown",function(event){ if(event.key==="Enter") toast("Search ready"); });
+}
+function forYou(editId){
+  const editing=editId?state.tickets.find(t=>t.id===decodeURIComponent(editId)):null;
+  let g=editing||{eventName:"",artistName:"",venue:"",location:"",date:"",time:"",image:"",mapQuery:"",order:"",extraInfo:"Mobile Ticket",tickets:[{id:uid("seat"),section:"",row:"",seat:"",barcode:""}]};
+  render(header(editing?"Edit Event":"For You",true)+'<form class="form" onsubmit="saveEvent(event,\''+(editing?encodeURIComponent(editing.id):"")+'\')">'+
+    '<div class="field"><label>Event Name</label><input id="fName" class="input" required value="'+esc(g.eventName)+'"></div>'+
+    '<div class="field"><label>Artist / Performer</label><input id="fArtist" class="input" value="'+esc(g.artistName)+'"></div>'+
+    '<div class="field"><label>Venue</label><input id="fVenue" class="input" value="'+esc(g.venue)+'"></div>'+
+    '<div class="field"><label>Location</label><input id="fLocation" class="input" value="'+esc(g.location)+'"></div>'+
+    '<div class="field"><label>Date</label><input id="fDate" class="input" type="date" value="'+esc(g.date)+'"></div>'+
+    '<div class="field"><label>Time</label><input id="fTime" class="input" type="time" value="'+esc(g.time)+'"></div>'+
+    '<div class="field"><label>Map Search</label><input id="fMap" class="input" value="'+esc(g.mapQuery)+'" placeholder="Venue, city, country"></div>'+
+    '<div class="field"><label>Order Number</label><input id="fOrder" class="input" value="'+esc(g.order)+'"></div>'+
+    '<div class="field"><label>Ticket Label</label><input id="fExtra" class="input" value="'+esc(g.extraInfo)+'"></div>'+
+    '<div class="field"><label>Event Image</label><input id="fImageFile" class="file-input" type="file" accept="image/*" onchange="previewImage(event)"><input id="fImage" class="input" placeholder="Or paste image URL" value="'+(g.image&&g.image.startsWith("data:")?"":esc(g.image))+'"><div id="imagePreview"></div></div>'+
+    '<div class="field"><label>Tickets / Seats</label><div id="seatEditors">'+g.tickets.map(seatEditor).join("")+'</div><button type="button" class="secondary" onclick="addSeat()">+ Add Another Ticket</button></div>'+
+    '<button class="primary" type="submit">'+(editing?"Save Changes":"Add Event / Tickets")+'</button>'+
+    (editing?'<button type="button" class="secondary" onclick="deleteEventFromForm(\''+encodeURIComponent(editing.id)+'\')">Delete Event</button>':"")+
+  '</form>',"/for-you");
+}
+function seatEditor(t){
+  return '<div class="seat-editor" data-seat="'+esc(t.id)+'"><button type="button" class="remove" onclick="this.parentElement.remove()">Remove</button>'+
+    '<div class="field"><label>Section</label><input class="input sec" value="'+esc(t.section)+'"></div>'+
+    '<div class="field"><label>Row</label><input class="input row" value="'+esc(t.row)+'"></div>'+
+    '<div class="field"><label>Seat</label><input class="input seat" value="'+esc(t.seat)+'"></div>'+
+    '<div class="field"><label>Barcode / Entry Code</label><input class="input code" value="'+esc(t.barcode)+'"></div></div>';
+}
+function addSeat(){
+  const w=el("seatEditors");if(w)w.insertAdjacentHTML("beforeend",seatEditor({id:uid("seat"),section:"",row:"",seat:"",barcode:""}));
+}
+function previewImage(e){
+  const file=e.target.files?.[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{const p=el("imagePreview");if(p)p.innerHTML='<img src="'+reader.result+'" style="width:100%;height:150px;object-fit:cover;border-radius:8px;margin-top:8px">';window.__pickedImage=reader.result};
+  reader.readAsDataURL(file);
+}
+function saveEvent(e,id){
+  e.preventDefault();
+  const seats=qa(".seat-editor").map(x=>({id:x.dataset.seat||uid("seat"),section:x.querySelector(".sec")?.value.trim()||"",row:x.querySelector(".row")?.value.trim()||"",seat:x.querySelector(".seat")?.value.trim()||"",barcode:x.querySelector(".code")?.value.trim()||""}));
+  let image=window.__pickedImage||el("fImage")?.value.trim()||"";
+  const data={eventName:el("fName").value.trim(),artistName:el("fArtist").value.trim(),venue:el("fVenue").value.trim(),location:el("fLocation").value.trim(),date:el("fDate").value,time:el("fTime").value,mapQuery:el("fMap").value.trim(),order:el("fOrder").value.trim()||"ORDER-000001",extraInfo:el("fExtra").value.trim()||"Mobile Ticket",image:image||FALLBACK,tickets:seats.length?seats:[{id:uid("seat"),section:"",row:"",seat:"",barcode:uid("code")}]};
+  if(id){
+    const d=decodeURIComponent(id),i=state.tickets.findIndex(x=>x.id===d);if(i>=0)state.tickets[i]=Object.assign({id:d},data);
+  }else state.tickets.push(Object.assign({id:uid("event")},data));
+  window.__pickedImage=null;save();go("/my-tickets");
+}
+function editEvent(id){go("/for-you/edit/"+id)}
+function deleteEventFromForm(id){
+  if(confirm("Delete this event?"))deleteEvent(id);
+}
+function account(){
+  render(header("Account",false)+'<main class="content"><div class="form">'+
+    '<div class="field"><label>First Name</label><input class="input" id="pFirst" value="'+esc(state.profile.firstName)+'"></div>'+
+    '<div class="field"><label>Last Name</label><input class="input" id="pLast" value="'+esc(state.profile.lastName)+'"></div>'+
+    '<div class="field"><label>Email</label><input class="input" id="pEmail" value="'+esc(state.profile.email)+'"></div>'+
+    '<button class="primary" onclick="saveProfile()">Save Profile</button></div></main>',"/account");
+}
+function saveProfile(){
+  state.profile.firstName=el("pFirst").value.trim();state.profile.lastName=el("pLast").value.trim();state.profile.email=el("pEmail").value.trim();save();toast("Profile saved");
+}
+function sellPage(){
+  render(header("Sell",false)+'<main class="content"><div class="section"><h1>Sell Tickets</h1><p>Choose an event from My Events to continue a sale.</p></div></main>',"/sell");
+}
+
+function main(){
+  const r=route();
+  if(r==="/discover")return discover();
+  if(r==="/for-you")return forYou();
+  if(r==="/account")return account();
+  if(r==="/sell")return sellPage();
+  if(r.startsWith("/for-you/edit/"))return forYou(r.slice("/for-you/edit/".length));
+  if(r.startsWith("/event/"))return eventPage(r.slice("/event/".length));
+  return myTickets();
+}
+
+window.go=go;window.myTickets=myTickets;window.showPast=showPast;window.viewTickets=viewTickets;window.closeModal=closeModal;window.eventMenu=eventMenu;
+window.deleteEvent=deleteEvent;window.shareEvent=shareEvent;window.openTransfer=openTransfer;window.transferReady=transferReady;window.submitTransfer=submitTransfer;window.cancelTransfer=cancelTransfer;
+window.startSell=startSell;window.discover=discover;window.forYou=forYou;window.addSeat=addSeat;window.previewImage=previewImage;window.saveEvent=saveEvent;window.editEvent=editEvent;
+window.deleteEventFromForm=deleteEventFromForm;window.account=account;window.saveProfile=saveProfile;window.sellPage=sellPage;window.showHelp=showHelp;
+
 window.addEventListener("hashchange",main);
-document.addEventListener("DOMContentLoaded",()=>{setDirection();main()});
+document.addEventListener("DOMContentLoaded",main);
+save();
+
 })();
