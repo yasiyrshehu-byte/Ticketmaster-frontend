@@ -1,578 +1,1602 @@
-*{box-sizing:border-box}
-:root{
-  --blue:#0569e8;
-  --black:#111214;
-  --white:#fff;
-  --muted:#8c8c91;
-  --line:#d9d9dd;
+/* =========================================================
+   TICKETWAVES MOBILE UI
+   Complete replacement stylesheet
+   ========================================================= */
+
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
 }
-html,body{
+
+:root{
+  --blue:#026cdf;
+  --blue-dark:#0059c9;
+  --black:#101112;
+  --white:#ffffff;
+  --text:#111111;
+  --muted:#8b8b90;
+  --light:#d1d1d1;
+  --line:#d8d8dc;
+  --panel:#f1f1f3;
+}
+
+html,
+body{
   margin:0;
+  padding:0;
   min-height:100%;
+  width:100%;
   background:#fff;
   color:#111;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,"Segoe UI",Arial,sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "SF Pro Text",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
 }
-body{overflow-x:hidden}
-button,input,textarea,select{font:inherit}
-button{border:0;background:none}
-.app{min-height:100vh;background:#fff}
-.shell{width:100%;max-width:430px;min-height:100vh;margin:0 auto;background:#fff;padding-bottom:78px}
-.content{padding:0 0 24px}
 
-/* Bottom navigation */
+body{
+  overflow-x:hidden;
+}
+
+button,
+input,
+textarea,
+select{
+  font:inherit;
+}
+
+button{
+  border:0;
+  background:none;
+  padding:0;
+}
+
+img{
+  max-width:100%;
+}
+
+.app{
+  width:100%;
+  min-height:100vh;
+  background:#fff;
+}
+
+.shell{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  margin:0 auto;
+  background:#fff;
+  padding-bottom:82px;
+}
+
+.content{
+  padding:0;
+}
+
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
+
 .bottom-nav{
   position:fixed;
+  z-index:1000;
   left:50%;
-  transform:translateX(-50%);
   bottom:0;
+  transform:translateX(-50%);
   width:min(430px,100%);
   height:78px;
   background:rgba(255,255,255,.98);
-  backdrop-filter:blur(12px);
-  border-top:1px solid #ddd;
+  border-top:1px solid #d9d9dc;
   display:grid;
   grid-template-columns:repeat(5,1fr);
-  z-index:100;
-  padding-bottom:env(safe-area-inset-bottom)
+  padding:0 0 env(safe-area-inset-bottom);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
 }
+
 .nav-item{
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   gap:4px;
-  color:#a0a0a4;
-  font-size:11px;
-  cursor:pointer
+  color:#99999d;
+  cursor:pointer;
+  min-width:0;
 }
-.nav-item.active{color:var(--blue)}
-.nav-icon{font-size:25px;line-height:24px}
-.nav-label{font-size:11px}
 
-/* Generic pages */
+.nav-item.active{
+  color:var(--blue);
+}
+
+.nav-icon{
+  font-size:27px;
+  line-height:25px;
+  font-weight:400;
+}
+
+.nav-label{
+  font-size:11px;
+  line-height:14px;
+  white-space:nowrap;
+}
+
+/* =========================================================
+   STANDARD HEADER
+   ========================================================= */
+
 .header{
   height:66px;
+  width:100%;
   background:#050505;
   color:#fff;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 18px
+  padding:0 18px;
 }
-.header .title{font-size:20px;font-weight:750;text-align:center;flex:1}
-.header .left,.header .right{width:70px}
-.header .right{text-align:right}
-.back{color:#fff;font-size:34px;line-height:1;cursor:pointer}
-.help{color:#fff;font-size:17px;font-weight:700;cursor:pointer}
-.subnav{background:#fff;padding:16px 20px 12px;border-bottom:1px solid #ddd;display:flex;gap:24px}
-.subtab{font-size:14px;font-weight:800;color:#777;padding:6px 0;cursor:pointer}
-.subtab.active{color:var(--blue);border-bottom:3px solid var(--blue)}
-.event-list{padding:12px 14px}
-.event-card{background:#111;overflow:hidden;position:relative;margin-bottom:14px}
-.event-card img{width:100%;height:220px;display:block;object-fit:cover}
-.shade{position:absolute;inset:72px 0 0;background:linear-gradient(transparent,rgba(0,0,0,.92))}
-.event-copy{position:absolute;left:16px;right:16px;bottom:62px;color:#fff}
-.event-date{font-size:13px;font-weight:750}
-.event-title{font-size:25px;font-weight:850;line-height:1.02;margin:7px 0}
-.event-venue{font-size:14px}
-.view-button{
-  position:absolute;
-  left:16px;right:16px;bottom:12px;height:42px;
-  background:var(--blue);color:#fff;border-radius:7px;
-  font-weight:800;cursor:pointer
-}
-.empty{padding:60px 24px;text-align:center;color:#777}
 
-/* Ticket detail */
-.tm-page{background:#fff;min-height:100vh;overflow:hidden}
-
-/* Hero image and controls */
-.tm-top{
-  position:relative;
-  height:260px;
-  background:#111;
-  overflow:visible;
-  z-index:1
+.header .title{
+  flex:1;
+  text-align:center;
+  font-size:20px;
+  font-weight:750;
 }
-.tm-top-image{
+
+.header .left,
+.header .right{
+  width:76px;
+}
+
+.header .right{
+  text-align:right;
+}
+
+.back{
+  color:#fff;
+  font-size:36px;
+  line-height:1;
+  cursor:pointer;
+}
+
+.help{
+  color:#fff;
+  font-size:17px;
+  font-weight:500;
+  cursor:pointer;
+}
+
+/* =========================================================
+   MY EVENTS
+   ========================================================= */
+
+.subnav{
   width:100%;
-  height:100%;
+  background:#fff;
+  border-bottom:1px solid #ddd;
+  display:flex;
+  gap:28px;
+  padding:15px 20px 11px;
+}
+
+.subtab{
+  color:#777;
+  font-size:13px;
+  font-weight:800;
+  padding:5px 0;
+  cursor:pointer;
+}
+
+.subtab.active{
+  color:#111;
+  border-bottom:3px solid #111;
+}
+
+.event-list{
+  padding:14px;
+}
+
+.event-card{
+  position:relative;
+  overflow:hidden;
+  background:#111;
+  margin-bottom:14px;
+}
+
+.event-card img{
+  width:100%;
+  height:260px;
   display:block;
   object-fit:cover;
-  object-position:center 18%
 }
-.tm-back,.tm-menu{
+
+.shade{
   position:absolute;
-  z-index:8;
+  inset:70px 0 0;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,.18) 22%,
+    rgba(0,0,0,.92) 100%
+  );
+}
+
+.event-copy{
+  position:absolute;
+  left:16px;
+  right:16px;
+  bottom:64px;
   color:#fff;
-  text-shadow:0 1px 6px #000;
-  cursor:pointer
 }
-.tm-back{
-  left:16px;top:12px;width:48px;height:48px;
-  font-size:48px;line-height:1;font-weight:300
+
+.event-date{
+  font-size:12px;
+  font-weight:800;
 }
+
+.event-title{
+  font-size:24px;
+  font-weight:900;
+  line-height:1.03;
+  margin:7px 0;
+}
+
+.event-venue{
+  font-size:13px;
+  line-height:1.3;
+}
+
+.view-button{
+  position:absolute;
+  left:16px;
+  right:16px;
+  bottom:12px;
+  height:42px;
+  background:var(--blue);
+  color:#fff;
+  border-radius:7px;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.empty{
+  padding:60px 24px;
+  text-align:center;
+  color:#777;
+}
+
+/* =========================================================
+   TICKET DETAIL PAGE
+   ========================================================= */
+
+.tm-page{
+  position:relative;
+  width:100%;
+  min-height:100vh;
+  background:#fff;
+}
+
+/* ---------------------------------------------------------
+   HERO / BTS IMAGE
+   --------------------------------------------------------- */
+
+.tm-top{
+  position:relative;
+  width:100%;
+  height:390px;
+  overflow:hidden;
+  background:#111;
+}
+
+.tm-top-image{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 20%;
+}
+
+.tm-top::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,.10) 0%,
+    rgba(0,0,0,0) 55%,
+    rgba(0,0,0,.15) 100%
+  );
+  pointer-events:none;
+}
+
+.tm-back,
 .tm-menu{
-  right:16px;top:16px;
-  font-size:24px;letter-spacing:3px
+  position:absolute;
+  z-index:20;
+  color:#fff;
+  cursor:pointer;
+  text-shadow:0 1px 5px rgba(0,0,0,.9);
+}
+
+.tm-back{
+  top:15px;
+  left:18px;
+  width:52px;
+  height:52px;
+  font-size:48px;
+  line-height:48px;
+  font-weight:300;
+}
+
+.tm-menu{
+  top:22px;
+  right:18px;
+  font-size:27px;
+  line-height:1;
+  letter-spacing:4px;
+}
+
+/* ---------------------------------------------------------
+   STACK CONTAINER
+   --------------------------------------------------------- */
+
+.tm-stack{
+  position:relative;
+  z-index:30;
+  width:100%;
+  margin-top:-48px;
+}
+
+/* ---------------------------------------------------------
+   BLACK FOLDER/TICKET PANEL
+   --------------------------------------------------------- */
+
+.tm-info{
+  position:relative;
+  width:calc(100% - 48px);
+  min-height:438px;
+  margin-left:30px;
+  margin-right:18px;
+  background:#202020;
+  color:#fff;
+  padding:30px 42px 32px 30px;
+  border-radius:10px 10px 8px 8px;
+  overflow:visible;
+  box-shadow:none;
 }
 
 /*
-  Overlapping/folder-tab card:
-  the black panel slides upward over the hero image.
-  The notch is built from pseudo-elements so it remains
-  responsive on mobile.
+  Raised folder/tab section:
+  this creates the stepped top edge seen in the reference.
 */
-.tm-stack{
-  position:relative;
-  z-index:5;
-  margin-top:-42px
-}
-.tm-info{
-  position:relative;
-  width:calc(100% - 32px);
-  margin-left:16px;
-  min-height:300px;
-  background:#111214;
-  color:#fff;
-  padding:22px 22px 24px;
-  border-radius:10px 10px 0 0;
-  overflow:visible
-}
-
-/* raised folder tab on top-left */
 .tm-info::before{
   content:"";
   position:absolute;
   left:0;
   top:-1px;
-  width:59%;
-  height:1px;
-  background:rgba(255,255,255,.08);
+  width:58%;
+  height:2px;
+  background:#202020;
+  border-radius:10px 0 0 0;
 }
 
-/* sharp white cut-out / notch on top-right */
+/*
+  White angular cut on top-right.
+  The black card appears to fold underneath the white area.
+*/
 .tm-info::after{
   content:"";
   position:absolute;
+  z-index:50;
   top:0;
   right:-1px;
-  width:58px;
-  height:52px;
+  width:64px;
+  height:76px;
   background:#fff;
-  clip-path:polygon(0 0,100% 0,100% 100%);
-  z-index:9;
+  clip-path:polygon(
+    0 0,
+    100% 0,
+    100% 100%
+  );
+  pointer-events:none;
 }
 
-/* small black bridge makes the notch look like a stepped folder */
-.tm-info .tm-notch-bridge{
+/* Additional stepped black tab */
+.tm-stack::before{
+  content:"";
   position:absolute;
+  z-index:35;
+  left:30px;
+  top:-76px;
+  width:58%;
+  height:76px;
+  background:#202020;
+  border-radius:10px 10px 0 0;
+  pointer-events:none;
 }
 
-/* Text hierarchy */
+/* ---------------------------------------------------------
+   DATE
+   --------------------------------------------------------- */
+
 .tm-date{
+  position:relative;
+  z-index:60;
+  margin:0 0 27px;
+  color:#b9b9bd;
   font-size:13px;
   line-height:1.2;
   font-weight:800;
   letter-spacing:.55px;
-  color:#b8b8bb;
-  margin-bottom:27px
-}
-.tm-title{
-  font-size:28px;
-  line-height:1.06;
-  font-weight:900;
-  letter-spacing:-.7px;
   text-transform:uppercase;
-  max-width:92%
 }
+
+/* ---------------------------------------------------------
+   EVENT TITLE
+   --------------------------------------------------------- */
+
+.tm-title{
+  position:relative;
+  z-index:60;
+  margin:0;
+  max-width:96%;
+  color:#fff;
+  font-size:31px;
+  line-height:1.07;
+  font-weight:900;
+  letter-spacing:-.8px;
+  text-transform:uppercase;
+}
+
+/* ---------------------------------------------------------
+   VENUE + TICKET QUANTITY
+   --------------------------------------------------------- */
+
 .tm-bottom-row{
   position:absolute;
-  left:22px;
-  right:20px;
-  bottom:26px;
+  z-index:60;
+  left:30px;
+  right:28px;
+  bottom:36px;
   display:flex;
   align-items:flex-end;
   justify-content:space-between;
-  gap:12px
+  gap:14px;
 }
+
 .tm-venue{
-  font-size:15px;
-  line-height:1.32;
-  color:#d2d2d4;
-  max-width:74%
+  max-width:76%;
+  color:#d1d1d1;
+  font-size:16px;
+  line-height:1.35;
+  font-weight:400;
 }
+
 .tm-count{
   display:flex;
   align-items:center;
-  gap:7px;
+  gap:8px;
   color:#fff;
   font-size:20px;
-  font-weight:850;
-  white-space:nowrap
+  line-height:1;
+  font-weight:800;
+  white-space:nowrap;
 }
+
+/* stacked-ticket icon */
 .tm-card-icon{
   position:relative;
-  width:30px;height:24px;
   display:inline-block;
-  transform:rotate(-8deg)
+  width:32px;
+  height:26px;
+  transform:rotate(-8deg);
+  flex:0 0 auto;
 }
-.tm-card-icon:before,.tm-card-icon:after{
+
+.tm-card-icon::before,
+.tm-card-icon::after{
   content:"";
   position:absolute;
+  width:26px;
+  height:20px;
   border:2px solid #fff;
   border-radius:1px;
-  width:24px;height:19px
+  background:transparent;
 }
-.tm-card-icon:before{left:0;top:1px}
-.tm-card-icon:after{left:5px;top:4px}
 
-/* Blue barcode CTA attached to card */
+.tm-card-icon::before{
+  left:0;
+  top:1px;
+}
+
+.tm-card-icon::after{
+  left:7px;
+  top:5px;
+}
+
+/* ---------------------------------------------------------
+   BLUE VIEW TICKETS BAR
+   --------------------------------------------------------- */
+
 .tm-barcode-btn{
-  width:calc(100% - 32px);
-  margin-left:16px;
-  margin-top:0;
-  height:60px;
-  background:var(--blue);
-  color:#fff;
+  position:relative;
+  z-index:40;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:12px;
-  font-size:19px;
+  gap:15px;
+  width:calc(100% - 48px);
+  height:76px;
+  margin-left:30px;
+  margin-right:18px;
+  margin-top:0;
+  margin-bottom:0;
+  padding:0;
+  background:var(--blue);
+  color:#fff;
+  font-size:22px;
+  line-height:1;
   font-weight:800;
   cursor:pointer;
-  border-radius:0 0 0 0
+  border-radius:8px;
 }
-.tm-barcode-icon{display:flex;align-items:center;gap:2px;height:25px}
-.tm-barcode-icon i{display:block;width:2px;height:100%;background:#fff}
-.tm-barcode-icon i:nth-child(2),
-.tm-barcode-icon i:nth-child(5){width:4px}
-.tm-barcode-icon i:nth-child(6){width:3px}
 
-/* Tickets / Extras tabs: immediately beneath button */
-.tm-tabs{
-  width:calc(100% - 32px);
-  margin-left:16px;
-  height:76px;
+.tm-barcode-btn:active{
+  background:var(--blue-dark);
+}
+
+.tm-barcode-icon{
   display:flex;
-  background:#fff
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  height:27px;
 }
-.tm-tab{
-  flex:1;
-  height:76px;
-  color:#111;
-  text-align:center;
-  font-size:16px;
-  padding-top:24px;
-  border:0;
-  border-bottom:4px solid #8c8c8f;
-  cursor:pointer
-}
-.tm-tab.active{border-bottom:5px solid #111}
 
-/* Order */
-.tm-order{
+.tm-barcode-icon i{
+  display:block;
+  width:2px;
+  height:100%;
   background:#fff;
-  padding:20px 14px 100px;
-  margin:0
 }
+
+.tm-barcode-icon i:nth-child(2),
+.tm-barcode-icon i:nth-child(5){
+  width:4px;
+}
+
+.tm-barcode-icon i:nth-child(6){
+  width:3px;
+}
+
+/* ---------------------------------------------------------
+   TICKETS / EXTRAS TABS
+   --------------------------------------------------------- */
+
+.tm-tabs{
+  width:100%;
+  height:118px;
+  margin:0;
+  padding:0 30px;
+  background:#fff;
+  display:flex;
+}
+
+.tm-tab{
+  position:relative;
+  flex:1;
+  height:118px;
+  margin:0;
+  padding:40px 0 0;
+  background:#fff;
+  color:#111;
+  font-size:18px;
+  line-height:1;
+  text-align:center;
+  border:0;
+  border-bottom:4px solid #858589;
+  cursor:pointer;
+}
+
+.tm-tab.active{
+  border-bottom:6px solid #111;
+}
+
+/* ---------------------------------------------------------
+   ORDER AREA
+   --------------------------------------------------------- */
+
+.tm-order{
+  width:100%;
+  margin:0;
+  padding:28px 18px 110px;
+  background:#fff;
+}
+
 .tm-order-head{
   display:flex;
   justify-content:space-between;
-  align-items:flex-start
-}
-.tm-order-number{font-size:24px;font-weight:900;letter-spacing:-.45px}
-.tm-order-sub{font-size:15px;color:#777;margin-top:5px}
-.tm-order-more{font-size:28px;line-height:1;cursor:pointer;color:#111}
-.ticket-card{
-  background:#eeeef1;
-  border:1px solid #dddde1;
-  border-radius:4px;
-  padding:15px 13px 13px;
-  margin-top:14px
-}
-.ticket-head{font-size:15px;font-weight:850;margin-bottom:14px}
-.seats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.seat-label{font-size:10px;font-weight:850;color:#777;letter-spacing:.5px;margin-bottom:4px}
-.seat-value{font-size:19px;font-weight:900}
-.pending{
-  border-top:1px solid #d5d5d8;
-  margin-top:12px;
-  padding-top:12px;
-  display:flex;
-  justify-content:space-between;
-  color:#555;
-  font-size:13px
-}
-.tm-more-heading{
-  font-size:12px;
-  font-weight:850;
-  letter-spacing:1px;
-  color:#777;
-  margin:22px 0 10px
+  align-items:flex-start;
+  width:100%;
 }
 
-/* Map / actions / directions */
-.tm-map{
-  height:180px;
-  border:1px solid #d3d5d9;
-  overflow:hidden;
-  background:#e5e7ea;
-  margin:0
+.tm-order-number{
+  color:#111;
+  font-size:28px;
+  line-height:1.05;
+  font-weight:900;
+  letter-spacing:-.7px;
 }
-.tm-map iframe{width:100%;height:100%;border:0;display:block}
-.tm-actions{
-  position:relative;
-  z-index:3;
-  margin:-21px 12px 10px;
-  height:44px;
-  border:1px solid #d5d5d9;
-  border-radius:999px;
-  background:#fff;
+
+.tm-order-sub{
+  margin-top:6px;
+  color:#777;
+  font-size:18px;
+  line-height:1;
+}
+
+.tm-order-more{
+  color:#111;
+  font-size:30px;
+  line-height:1;
+  cursor:pointer;
+  padding:0 2px;
+}
+
+/* ---------------------------------------------------------
+   TICKET CARDS
+   --------------------------------------------------------- */
+
+.ticket-card{
+  width:100%;
+  background:#efeff2;
+  border:1px solid #d9d9de;
+  border-radius:5px;
+  padding:18px 14px 14px;
+  margin-top:16px;
+}
+
+.ticket-head{
+  margin-bottom:18px;
+  color:#111;
+  font-size:16px;
+  line-height:1;
+  font-weight:850;
+}
+
+.seats{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  box-shadow:0 2px 10px rgba(0,0,0,.12)
-}
-.tm-actions button{
-  font-size:11px;
-  font-weight:800;
-  border-right:1px solid #ddd;
-  cursor:pointer;
-  color:#777
-}
-.tm-actions button:nth-child(2){color:var(--blue)}
-.tm-actions button:last-child{border-right:0}
-.tm-directions{
-  display:block;
-  margin:0;
-  height:50px;
-  line-height:50px;
-  padding:0 8px;
-  text-align:center;
-  color:var(--blue);
-  font-weight:800;
-  text-decoration:none;
-  border:1px solid #ddd;
-  background:#fff
+  gap:10px;
 }
 
-/* Extras must start directly under directions */
-.tm-extras{
-  margin:0 !important;
-  padding:12px 16px 28px !important;
-  border-top:8px solid #f3f3f5;
-  background:#fff
-}
-.tm-extra-title{
-  font-size:13px;
-  letter-spacing:1px;
+.seat-label{
+  margin-bottom:5px;
   color:#777;
-  margin-bottom:12px
+  font-size:11px;
+  line-height:1;
+  font-weight:850;
+  letter-spacing:.6px;
 }
-.got-card{border:1px solid #d7d7da}
-.got-visual{display:grid;grid-template-columns:1fr 1fr;min-height:184px}
-.got-visual img{width:100%;height:184px;object-fit:cover}
+
+.seat-value{
+  color:#111;
+  font-size:22px;
+  line-height:1;
+  font-weight:900;
+}
+
+.pending{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-top:13px;
+  padding-top:12px;
+  border-top:1px solid #d6d6da;
+  color:#555;
+  font-size:13px;
+}
+
+/* ---------------------------------------------------------
+   MORE OPTIONS / MAP
+   --------------------------------------------------------- */
+
+.tm-more-heading{
+  margin:26px 0 10px;
+  color:#777;
+  font-size:12px;
+  line-height:1;
+  font-weight:850;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.tm-map{
+  position:relative;
+  width:100%;
+  height:205px;
+  overflow:hidden;
+  border:1px solid #d3d5d9;
+  background:#e5e7ea;
+  margin:0;
+}
+
+.tm-map iframe{
+  display:block;
+  width:100%;
+  height:100%;
+  border:0;
+}
+
+/* ---------------------------------------------------------
+   FLOATING UPGRADE / TRANSFER / SELL PILL
+   --------------------------------------------------------- */
+
+.tm-actions{
+  position:relative;
+  z-index:20;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  width:calc(100% - 28px);
+  height:48px;
+  margin:-24px 14px 12px;
+  background:#fff;
+  border:1px solid #d3d3d7;
+  border-radius:999px;
+  box-shadow:0 2px 12px rgba(0,0,0,.13);
+}
+
+.tm-actions button{
+  color:#777;
+  font-size:12px;
+  line-height:1;
+  font-weight:800;
+  border-right:1px solid #dedee1;
+  cursor:pointer;
+}
+
+.tm-actions button:nth-child(2){
+  color:var(--blue);
+}
+
+.tm-actions button:last-child{
+  border-right:0;
+}
+
+/* ---------------------------------------------------------
+   GET DIRECTIONS
+   --------------------------------------------------------- */
+
+.tm-directions{
+  display:block;
+  width:100%;
+  margin:0;
+  padding:17px 10px;
+  text-align:center;
+  text-decoration:none;
+  color:var(--blue);
+  background:#fff;
+  border:1px solid #ddd;
+  font-size:16px;
+  line-height:1;
+  font-weight:800;
+}
+
+/* ---------------------------------------------------------
+   EXTRAS
+   --------------------------------------------------------- */
+
+.tm-extras{
+  width:100%;
+  margin:0;
+  padding:0 18px 30px;
+  background:#fff;
+  border-top:10px solid #f3f3f5;
+}
+
+.tm-extra-title{
+  margin:18px 0 12px;
+  color:#777;
+  font-size:13px;
+  line-height:1;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.got-card{
+  width:100%;
+  border:1px solid #d7d7da;
+  background:#fff;
+}
+
+.got-visual{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  width:100%;
+  min-height:184px;
+}
+
+.got-visual img{
+  display:block;
+  width:100%;
+  height:184px;
+  object-fit:cover;
+}
+
 .got-word{
+  display:flex;
+  align-items:center;
   background:#232323;
   color:#fff;
   padding:18px;
+  font-size:25px;
+  line-height:1.03;
+  font-weight:900;
+}
+
+.share{
+  padding:24px 20px;
+}
+
+.share h3{
+  margin:0 0 10px;
+  color:#111;
+  font-size:24px;
+  line-height:1.05;
+  font-weight:900;
+}
+
+.share p{
+  margin:0 0 18px;
+  color:#646469;
+  font-size:15px;
+  line-height:1.45;
+}
+
+.share button{
+  height:46px;
+  padding:0 24px;
+  background:var(--blue);
+  color:#fff;
+  border-radius:8px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* =========================================================
+   ENTRY / VIEW TICKET SCREEN
+   ========================================================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:3000;
+  display:none;
+  background:#fff;
+}
+
+.modal.show{
+  display:block;
+}
+
+.entry-full{
+  width:100%;
+  height:100%;
+  overflow:auto;
+  background:#fff;
+  color:#111;
+}
+
+.entry-bar{
+  position:sticky;
+  top:0;
+  z-index:10;
+  height:70px;
   display:flex;
   align-items:center;
-  font-size:26px;
-  font-weight:900;
-  line-height:1.03
+  justify-content:space-between;
+  padding:0 18px;
+  background:#050505;
+  color:#fff;
 }
-.share{padding:24px 20px}
-.share h3{font-size:24px;margin:0 0 10px}
-.share p{font-size:15px;line-height:1.45;color:#646469;margin:0 0 18px}
-.share button{
+
+.entry-back{
+  color:#fff;
+  font-size:44px;
+  line-height:1;
+  cursor:pointer;
+}
+
+.entry-bar > span{
+  font-size:18px;
+  font-weight:800;
+}
+
+.entry-dots{
+  color:#fff;
+  font-size:22px;
+  letter-spacing:2px;
+}
+
+.entry-image{
+  width:100%;
+  height:220px;
+  background:#111;
+}
+
+.entry-image img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.entry-summary{
+  padding:18px;
+}
+
+.entry-title{
+  margin:0;
+  color:#111;
+  font-size:26px;
+  line-height:1.08;
+  font-weight:900;
+}
+
+.entry-date{
+  margin-top:9px;
+  color:#666;
+  font-size:13px;
+  font-weight:800;
+}
+
+.entry-venue{
+  margin-top:6px;
+  color:#444;
+  font-size:14px;
+}
+
+.entry-seats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  padding:16px 18px;
+  background:#f3f3f5;
+  border-top:1px solid #ddd;
+  border-bottom:1px solid #ddd;
+}
+
+.entry-seats small{
+  display:block;
+  color:#777;
+  font-size:10px;
+  font-weight:850;
+}
+
+.entry-seats strong{
+  display:block;
+  margin-top:4px;
+  color:#111;
+  font-size:20px;
+}
+
+.entry-demo-note{
+  padding:14px;
+  text-align:center;
+  color:#777;
+  font-size:10px;
+  letter-spacing:.8px;
+}
+
+.entry-live-code{
+  position:relative;
+  height:145px;
+  margin:0 18px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #111 0 2px,
+      #fff 2px 4px,
+      #111 4px 5px,
+      #fff 5px 8px,
+      #111 8px 11px,
+      #fff 11px 14px
+    );
+}
+
+.scan{
+  position:absolute;
+  left:0;
+  right:0;
+  height:3px;
+  background:var(--blue);
+  box-shadow:0 0 12px var(--blue);
+  animation:scan 1.8s linear infinite;
+}
+
+.entry-code{
+  padding:12px;
+  text-align:center;
+  color:#555;
+  font-size:11px;
+  letter-spacing:2px;
+}
+
+.entry-position{
+  text-align:center;
+  color:#555;
+  font-weight:850;
+}
+
+.entry-arrows{
+  display:flex;
+  justify-content:space-between;
+  padding:0 20px;
+}
+
+.entry-arrows button{
+  font-size:42px;
+  cursor:pointer;
+}
+
+.wallet-btn{
+  display:block;
+  width:calc(100% - 36px);
+  height:48px;
+  margin:10px 18px;
+  border:1px solid #aaa;
+  border-radius:9px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.entry-footer{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  padding:10px 18px 28px;
+}
+
+.entry-footer button{
+  height:44px;
+  background:var(--blue);
+  color:#fff;
+  border-radius:8px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* =========================================================
+   FOR YOU / ACCOUNT / FORMS
+   ========================================================= */
+
+.form{
+  padding:18px 16px 30px;
+}
+
+.field{
+  margin-bottom:14px;
+}
+
+.field label{
+  display:block;
+  margin-bottom:7px;
+  color:#5f6064;
+  font-size:12px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.45px;
+}
+
+.input,
+.textarea,
+.select{
+  width:100%;
+  height:46px;
+  padding:0 13px;
+  background:#fff;
+  border:1px solid #cbccd0;
+  border-radius:8px;
+  outline:none;
+}
+
+.textarea{
+  height:92px;
+  padding-top:12px;
+}
+
+.file-input{
+  width:100%;
+  padding:12px 0;
+}
+
+.primary{
+  width:100%;
   height:46px;
   background:var(--blue);
   color:#fff;
   border-radius:8px;
   font-weight:800;
-  padding:0 24px;
-  cursor:pointer
+  cursor:pointer;
 }
 
-/* Entry screen */
-.modal{position:fixed;inset:0;background:#fff;display:none;z-index:300}
-.modal.show{display:block}
-.entry-full{height:100%;overflow:auto;background:#fff;color:#111}
-.entry-bar{
-  height:70px;background:#050505;color:#fff;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 18px;position:sticky;top:0;z-index:2
-}
-.entry-back{color:#fff;font-size:44px;line-height:1;cursor:pointer}
-.entry-bar>span{font-size:18px;font-weight:800}
-.entry-dots{color:#fff;font-size:22px;letter-spacing:2px}
-.entry-image{height:220px;background:#111}
-.entry-image img{width:100%;height:100%;object-fit:cover}
-.entry-summary{padding:18px}
-.entry-title{font-size:26px;font-weight:900;line-height:1.08}
-.entry-date{font-size:13px;color:#666;font-weight:800;margin-top:9px}
-.entry-venue{font-size:14px;color:#444;margin-top:6px}
-.entry-seats{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  padding:16px 18px;background:#f3f3f5;
-  border-top:1px solid #ddd;border-bottom:1px solid #ddd
-}
-.entry-seats small{display:block;font-size:10px;color:#777;font-weight:850}
-.entry-seats strong{font-size:20px;display:block;margin-top:4px}
-.entry-demo-note{text-align:center;font-size:10px;letter-spacing:.8px;color:#777;padding:14px}
-.entry-live-code{
-  position:relative;height:145px;margin:0 18px;
-  background:repeating-linear-gradient(
-    90deg,#111 0 2px,#fff 2px 4px,#111 4px 5px,
-    #fff 5px 8px,#111 8px 11px,#fff 11px 14px
-  )
-}
-.scan{
-  position:absolute;left:0;right:0;height:3px;
-  background:var(--blue);
-  box-shadow:0 0 12px var(--blue);
-  animation:scan 1.8s linear infinite
-}
-.entry-code{text-align:center;font-size:11px;letter-spacing:2px;color:#555;padding:12px}
-.entry-position{text-align:center;font-weight:850;color:#555}
-.entry-arrows{display:flex;justify-content:space-between;padding:0 20px}
-.entry-arrows button{font-size:42px;cursor:pointer}
-.wallet-btn{
-  display:block;width:calc(100% - 36px);margin:10px 18px;
-  height:48px;border:1px solid #aaa;border-radius:9px;
-  font-weight:800;cursor:pointer
-}
-.entry-footer{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:8px;padding:10px 18px 28px
-}
-.entry-footer button{
-  height:44px;background:var(--blue);color:#fff;
-  border-radius:8px;font-weight:800;cursor:pointer
-}
-
-/* Forms / modals */
-.form{padding:18px 16px 30px}
-.field{margin-bottom:14px}
-.field label{
-  display:block;font-size:12px;font-weight:800;color:#5f6064;
-  margin-bottom:7px;text-transform:uppercase;letter-spacing:.45px
-}
-.input,.textarea,.select{
-  width:100%;height:46px;border:1px solid #cbccd0;
-  border-radius:8px;background:#fff;padding:0 13px;outline:none
-}
-.textarea{height:92px;padding-top:12px}
-.file-input{padding:12px 0}
-.primary{
-  width:100%;height:46px;background:var(--blue);color:#fff;
-  border-radius:8px;font-weight:800;cursor:pointer
-}
 .secondary{
-  width:100%;height:44px;border:1px solid #cfd0d4;
-  border-radius:8px;font-weight:800;margin-top:9px;cursor:pointer
+  width:100%;
+  height:44px;
+  margin-top:9px;
+  border:1px solid #cfd0d4;
+  border-radius:8px;
+  font-weight:800;
+  cursor:pointer;
 }
+
 .seat-editor{
-  background:#f4f4f6;border:1px solid #dedee2;
-  border-radius:8px;padding:13px;margin-bottom:10px
+  padding:13px;
+  margin-bottom:10px;
+  background:#f4f4f6;
+  border:1px solid #dedee2;
+  border-radius:8px;
 }
-.remove{float:right;color:#b3261e;font-size:12px;font-weight:800;cursor:pointer}
-.discover-hero{padding:20px 18px}
-.search{height:46px;border:1px solid #d6d6da;border-radius:8px;padding:0 14px;width:100%}
-.list-card{margin:14px 16px;border:1px solid #ddd;border-radius:8px;padding:16px}
-.list-card h3{margin:0 0 5px}
-.list-card p{margin:0;color:#777;line-height:1.4}
-.section{padding:18px}
-.section h1{font-size:28px;margin:0 0 4px}
-.section p{color:#777}
+
+.remove{
+  float:right;
+  color:#b3261e;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.discover-hero{
+  padding:20px 18px;
+}
+
+.search{
+  width:100%;
+  height:46px;
+  padding:0 14px;
+  border:1px solid #d6d6da;
+  border-radius:8px;
+}
+
+.list-card{
+  margin:14px 16px;
+  padding:16px;
+  border:1px solid #ddd;
+  border-radius:8px;
+}
+
+.list-card h3{
+  margin:0 0 5px;
+}
+
+.list-card p{
+  margin:0;
+  color:#777;
+  line-height:1.4;
+}
+
+.section{
+  padding:18px;
+}
+
+.section h1{
+  margin:0 0 4px;
+  font-size:28px;
+}
+
+.section p{
+  color:#777;
+}
+
+/* =========================================================
+   BOTTOM SHEETS / TRANSFER
+   ========================================================= */
+
 .modal .sheet{
-  width:min(430px,100%);max-height:92vh;background:#fff;
-  border-radius:18px 18px 0 0;position:absolute;bottom:0;left:50%;
-  transform:translateX(-50%);overflow:auto
+  position:absolute;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(430px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:18px 18px 0 0;
 }
-.sheet-handle{width:42px;height:5px;border-radius:6px;background:#d0d0d3;margin:9px auto}
+
+.sheet-handle{
+  width:42px;
+  height:5px;
+  margin:9px auto;
+  background:#d0d0d3;
+  border-radius:6px;
+}
+
 .sheet-head{
-  padding:13px 18px;font-size:16px;font-weight:850;
-  border-bottom:1px solid #eee;display:flex;justify-content:space-between
+  display:flex;
+  justify-content:space-between;
+  padding:13px 18px;
+  border-bottom:1px solid #eee;
+  font-size:16px;
+  font-weight:850;
 }
-.sheet-body{padding:18px}
-.close{font-weight:800;color:#555;cursor:pointer}
-.transfer-row{margin-bottom:12px}
+
+.sheet-body{
+  padding:18px;
+}
+
+.close{
+  color:#555;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.transfer-row{
+  margin-bottom:12px;
+}
+
 .transfer-actions{
-  display:grid;grid-template-columns:1fr 1fr;gap:10px;
-  padding:16px;border-top:1px solid #eee;position:sticky;bottom:0;background:#fff
+  position:sticky;
+  bottom:0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:16px;
+  background:#fff;
+  border-top:1px solid #eee;
 }
-.transfer-actions button{height:45px;border-radius:8px;font-weight:800;cursor:pointer}
-.back-btn{border:1px solid #ccc}
-.forward-btn{background:var(--blue);color:#fff;opacity:.45}
-.forward-btn.ready{opacity:1}
+
+.transfer-actions button{
+  height:45px;
+  border-radius:8px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.back-btn{
+  border:1px solid #ccc;
+}
+
+.forward-btn{
+  background:var(--blue);
+  color:#fff;
+  opacity:.45;
+}
+
+.forward-btn.ready{
+  opacity:1;
+}
+
 .toast{
-  position:fixed;left:50%;transform:translateX(-50%);bottom:94px;
-  background:#222;color:#fff;padding:11px 15px;border-radius:999px;
-  font-size:13px;z-index:500
+  position:fixed;
+  z-index:5000;
+  left:50%;
+  bottom:94px;
+  transform:translateX(-50%);
+  padding:11px 15px;
+  background:#222;
+  color:#fff;
+  border-radius:999px;
+  font-size:13px;
 }
-@keyframes scan{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
 
-@media(max-width:430px){
-  .shell{max-width:390px}
-  .bottom-nav{max-width:390px;height:76px}
-  .nav-icon{font-size:24px}.nav-label{font-size:10px}
+/* =========================================================
+   SCAN ANIMATION
+   ========================================================= */
 
-  .tm-top{height:240px}
-  .tm-top-image{height:240px}
+@keyframes scan{
+  0%{
+    top:0;
+  }
+  50%{
+    top:calc(100% - 3px);
+  }
+  100%{
+    top:0;
+  }
+}
 
-  .tm-stack{margin-top:-38px}
+/* =========================================================
+   MOBILE REFERENCE PROPORTIONS
+   ========================================================= */
+
+@media screen and (max-width:430px){
+
+  .shell{
+    width:100%;
+    max-width:430px;
+    padding-bottom:78px;
+  }
+
+  /* HERO */
+  .tm-top{
+    height:390px;
+  }
+
+  .tm-top-image{
+    height:390px;
+    object-fit:cover;
+    object-position:center 20%;
+  }
+
+  .tm-back{
+    left:15px;
+    top:14px;
+    width:48px;
+    height:48px;
+    font-size:44px;
+    line-height:44px;
+  }
+
+  .tm-menu{
+    right:16px;
+    top:20px;
+    font-size:24px;
+    letter-spacing:3px;
+  }
+
+  /* OVERLAPPED BLACK CARD */
+  .tm-stack{
+    margin-top:-46px;
+  }
+
   .tm-info{
-    width:calc(100% - 28px);
-    margin-left:14px;
-    min-height:270px;
-    padding:18px 18px 20px
-  }
-  .tm-info::after{
-    width:50px;
-    height:48px
+    width:calc(100% - 48px);
+    min-height:292px;
+    margin-left:30px;
+    margin-right:18px;
+    padding:22px 36px 24px 30px;
+    border-radius:9px 9px 7px 7px;
   }
 
-  .tm-date{font-size:12px;margin-bottom:22px}
-  .tm-title{font-size:22px;line-height:1.06}
-  .tm-bottom-row{left:18px;right:16px;bottom:20px}
-  .tm-venue{font-size:13px;max-width:74%}
-  .tm-count{font-size:18px}
+  .tm-stack::before{
+    left:30px;
+    top:-62px;
+    width:58%;
+    height:62px;
+    border-radius:9px 9px 0 0;
+  }
+
+  .tm-info::after{
+    top:0;
+    right:0;
+    width:52px;
+    height:62px;
+    clip-path:polygon(
+      0 0,
+      100% 0,
+      100% 100%
+    );
+  }
+
+  .tm-date{
+    margin-bottom:22px;
+    font-size:12px;
+    letter-spacing:.45px;
+  }
+
+  .tm-title{
+    max-width:96%;
+    font-size:27px;
+    line-height:1.06;
+    letter-spacing:-.6px;
+  }
+
+  .tm-bottom-row{
+    left:30px;
+    right:24px;
+    bottom:24px;
+    gap:10px;
+  }
+
+  .tm-venue{
+    max-width:74%;
+    font-size:14px;
+    line-height:1.32;
+  }
+
+  .tm-count{
+    gap:6px;
+    font-size:18px;
+  }
+
+  .tm-card-icon{
+    width:29px;
+    height:23px;
+  }
+
+  .tm-card-icon::before,
+  .tm-card-icon::after{
+    width:23px;
+    height:18px;
+    border-width:2px;
+  }
+
+  .tm-card-icon::after{
+    left:6px;
+    top:4px;
+  }
+
+  /* BLUE CTA DIRECTLY ATTACHED */
+  .tm-barcode-btn{
+    width:calc(100% - 48px);
+    height:62px;
+    margin-left:30px;
+    margin-right:18px;
+    font-size:19px;
+    gap:12px;
+    border-radius:0;
+  }
+
+  .tm-barcode-icon{
+    height:24px;
+  }
+
+  /* TABS DIRECTLY AFTER BLUE CTA */
+  .tm-tabs{
+    height:88px;
+    padding:0 30px;
+  }
+
+  .tm-tab{
+    height:88px;
+    padding-top:31px;
+    font-size:17px;
+  }
+
+  .tm-tab.active{
+    border-bottom-width:5px;
+  }
+
+  /* ORDER */
+  .tm-order{
+    padding:22px 18px 100px;
+  }
+
+  .tm-order-number{
+    font-size:24px;
+    letter-spacing:-.5px;
+  }
+
+  .tm-order-sub{
+    margin-top:6px;
+    font-size:16px;
+  }
+
+  .tm-order-more{
+    font-size:28px;
+  }
+
+  /* TICKET CARDS */
+  .ticket-card{
+    padding:16px 13px 14px;
+    margin-top:14px;
+  }
+
+  .ticket-head{
+    margin-bottom:16px;
+    font-size:15px;
+  }
+
+  .seat-label{
+    font-size:10px;
+  }
+
+  .seat-value{
+    font-size:20px;
+  }
+
+  /* MAP */
+  .tm-more-heading{
+    margin-top:24px;
+  }
+
+  .tm-map{
+    height:180px;
+  }
+
+  /* ACTION PILL */
+  .tm-actions{
+    width:calc(100% - 24px);
+    height:46px;
+    margin:-23px 12px 10px;
+  }
+
+  .tm-actions button{
+    font-size:11px;
+  }
+
+  /* GET DIRECTIONS */
+  .tm-directions{
+    padding:15px 8px;
+    font-size:15px;
+  }
+
+  /* NO HUGE GAP BEFORE EXTRAS */
+  .tm-extras{
+    margin:0;
+    padding:0 18px 30px;
+    border-top:10px solid #f3f3f5;
+  }
+
+  .tm-extra-title{
+    margin-top:18px;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav{
+    width:100%;
+    max-width:430px;
+    height:76px;
+  }
+
+  .nav-icon{
+    font-size:24px;
+    line-height:23px;
+  }
+
+  .nav-label{
+    font-size:10px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media screen and (max-width:375px){
+
+  .tm-top,
+  .tm-top-image{
+    height:350px;
+  }
+
+  .tm-info{
+    min-height:275px;
+    padding-left:24px;
+    padding-right:30px;
+  }
+
+  .tm-stack::before{
+    left:24px;
+  }
+
+  .tm-title{
+    font-size:24px;
+  }
+
+  .tm-date{
+    font-size:11px;
+  }
+
+  .tm-bottom-row{
+    left:24px;
+    right:20px;
+  }
 
   .tm-barcode-btn{
-    width:calc(100% - 28px);
-    margin-left:14px;
-    height:56px;
-    font-size:17px
+    font-size:18px;
   }
 
   .tm-tabs{
-    width:calc(100% - 28px);
-    margin-left:14px;
-    height:70px
+    padding:0 24px;
   }
-  .tm-tab{height:70px;padding-top:22px;font-size:15px}
 
-  .tm-order{padding-left:12px;padding-right:12px}
-  .tm-order-number{font-size:22px}
-  .tm-order-sub{font-size:15px}
-
-  .tm-more-heading{margin-top:20px}
-  .tm-map{height:170px}
-
-  .tm-actions{
-    margin:-21px 12px 10px;
-    height:44px
+  .tm-order{
+    padding-left:14px;
+    padding-right:14px;
   }
-  .tm-actions button{font-size:11px}
 
-  .tm-directions{height:50px;line-height:50px}
-  .tm-extras{
-    margin:0 !important;
-    padding:12px 14px 28px !important;
-    border-top:8px solid #f3f3f5
+  .tm-order-number{
+    font-size:22px;
   }
 }
