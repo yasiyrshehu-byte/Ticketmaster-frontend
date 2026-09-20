@@ -173,7 +173,6 @@ function eventPage(id){
   '<img class="tm-image" src="'+esc(img(g.image))+'" alt="">'+
 
   '<div class="tm-card">'+
-
     '<div class="tm-date">'+esc(dateLabel(g.date,g.time))+'</div>'+
 
     '<div class="tm-title">'+esc(g.eventName)+'</div>'+
@@ -184,21 +183,20 @@ function eventPage(id){
 
     '<div class="tm-count">🎟 x'+count+'</div>'+
 
-    '<button class="tm-view-btn" onclick="viewTickets(\''+
-      encodeURIComponent(g.id)+
-    '\')">🎟 View Tickets</button>'+
-
+    '<button class="tm-view-btn" onclick="viewTickets(\''+encodeURIComponent(g.id)+'\')">'+
+      '🎟 View Tickets'+
+    '</button>'+
   '</div>'+
 
 '</section>'+
-'<div class="tm-tabs">'+
-  '<div class="tm-tab active">Tickets</div>'+
-  '<div class="tm-tab">Extras</div>'+
-'</div>'+
-      '<section class="order">'+
+
+  '<section class="order">'+
         '<div class="order-head"><div><div class="order-num">Order #'+esc(g.order)+'</div><div class="order-sub">x'+count+' Ticket'+(count===1?"":"s")+'</div></div><button class="dots" onclick="eventMenu(\''+encodeURIComponent(g.id)+'\')">⋮</button></div>'+
         g.tickets.map((t,i)=>ticketCard(g,t,i)).join("")+
-        '<div class="more-options">MORE OPTIONS</div>'+
+       <div class="tabs">
+   <button class="tab active">Tickets</button>
+   <button class="tab">Extras</button>
+</div>
         '<div class="map"><iframe loading="lazy" title="Map" src="https://www.openstreetmap.org/export/embed.html?bbox=-79.43%2C43.63%2C-79.32%2C43.72&layer=mapnik"></iframe></div>'+
         '<div class="map-actions">'+
           '<button onclick="toast(\'Upgrade options\')">↥ Upgrade</button>'+
