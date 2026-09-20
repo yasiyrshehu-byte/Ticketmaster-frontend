@@ -169,17 +169,32 @@ function eventPage(id){
   return render(
     header("",true)+
     '<main class="content">'+
-      '<section class="hero">'+
-        '<img src="'+esc(img(g.image))+'" alt="">'+
-        '<div class="hero-shade"></div>'+
-        '<div class="hero-info">'+
-          '<div class="hero-date">'+esc(dateLabel(g.date,g.time))+'</div>'+
-          '<div class="hero-name">'+esc(g.eventName)+'</div>'+
-          '<div class="hero-meta">'+esc(g.venue)+(g.location?" • "+esc(g.location):"")+'</div>'+
-        '</div>'+
-        '<div class="hero-count">'+ticketGlyph()+' x'+count+'</div>'+
-      '</section>'+
-      '<div class="ticket-action"><button onclick="viewTickets(\''+encodeURIComponent(g.id)+'\')">▣ View Tickets</button></div>'+
+     '<section class="tm-hero">'+
+  '<img class="tm-image" src="'+esc(img(g.image))+'" alt="">'+
+
+  '<div class="tm-card">'+
+
+    '<div class="tm-date">'+esc(dateLabel(g.date,g.time))+'</div>'+
+
+    '<div class="tm-title">'+esc(g.eventName)+'</div>'+
+
+    '<div class="tm-venue">'+
+      esc(g.venue)+(g.location?" - "+esc(g.location):"")+
+    '</div>'+
+
+    '<div class="tm-count">🎟 x'+count+'</div>'+
+
+    '<button class="tm-view-btn" onclick="viewTickets(\''+
+      encodeURIComponent(g.id)+
+    '\')">🎟 View Tickets</button>'+
+
+  '</div>'+
+
+'</section>'+
+'<div class="tm-tabs">'+
+  '<div class="tm-tab active">Tickets</div>'+
+  '<div class="tm-tab">Extras</div>'+
+'</div>'+
       '<section class="order">'+
         '<div class="order-head"><div><div class="order-num">Order #'+esc(g.order)+'</div><div class="order-sub">x'+count+' Ticket'+(count===1?"":"s")+'</div></div><button class="dots" onclick="eventMenu(\''+encodeURIComponent(g.id)+'\')">⋮</button></div>'+
         g.tickets.map((t,i)=>ticketCard(g,t,i)).join("")+
