@@ -200,9 +200,9 @@ function eventPage(id){
 '<div class="tabs">'+
    '<button class="tab active">Tickets</button>'+
    '<button class="tab">Extras</button>'+
+'<div class="map">'+
+'<iframe loading="lazy" title="Map" src="https://www.openstreetmap.org/export/embed.html?bbox=-79.43%2C43.63%2C-79.32%2C43.72&layer=mapnik"></iframe>'+
 '</div>'+
-
-'<div class="map"><iframe loading="lazy" title="Map" src="https://www.openstreetmap.org/export/embed.html?bbox=-79.43%2C43.63%2C-79.32%2C43.72&layer=mapnik"></iframe></div>'+<iframe loading="lazy" title="Map" src="https://www.openstreetmap.org/export/embed.html?bbox=-79.43%2C43.63%2C-79.32%2C43.72&layer=mapnik"></iframe></div>'+
         '<div class="map-actions">'+
           '<button onclick="toast(\'Upgrade options\')">↥ Upgrade</button>'+
           '<button onclick="openTransfer(\''+encodeURIComponent(g.id)+'\')">↗ Transfer</button>'+
