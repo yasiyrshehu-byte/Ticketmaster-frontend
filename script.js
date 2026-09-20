@@ -169,37 +169,40 @@ function eventPage(id){
   return render(
     header("",true)+
     '<main class="content">'+
-     '<section class="hero">'+
+     '<div class="hero">'+
 
-  '<img src="'+esc(img(g.image))+'" alt="">'+
+'<img src="'+esc(img(g.image))+'" alt="">'+
 
-  '<div class="hero-info">'+
+'<div class="hero-info">'+
 
-      '<div class="hero-date">'+
-         esc(dateLabel(g.date,g.time))+
-      '</div>'+
+'<div class="hero-date">'+
+esc(dateLabel(g.date,g.time))+
+'</div>'+
 
-      '<div class="hero-name">'+
-         esc(g.eventName)+
-      '</div>'+
+'<div class="hero-name">'+
+esc(g.eventName)+
+'</div>'+
 
-      '<div class="hero-meta">'+
-         esc(g.venue)+(g.location?" - "+esc(g.location):"")+
-      '</div>'+
+'<div class="hero-meta">'+
+esc(g.venue)+(g.location ? " - "+esc(g.location) : "")+
+'</div>'+
 
-      '<div class="hero-count">'+
-         '🎟 x'+count+
-      '</div>'+
+'<div class="hero-count">🎟 x'+count+'</div>'+
 
-  '</div>'+
+'</div>'+
 
-  '<div class="ticket-action">'+
-      '<button onclick="viewTickets(\''+encodeURIComponent(g.id)+'\')">'+
-          '🎟 View Tickets'+
-      '</button>'+
-  '</div>'+
+'<div class="ticket-action">'+
+'<button onclick="viewTickets(\''+encodeURIComponent(g.id)+'\')">'+
+'🎟 View Tickets'+
+'</button>'+
+'</div>'+
 
-'</section>'+
+'</div>'+
+
+'<div class="ticket-tabs">'+
+'<div class="ticket-tab active">Tickets</div>'+
+'<div class="ticket-tab">Extras</div>'+
+'</div>'+
 
 '<div class="ticket-tabs">'+
    '<div class="ticket-tab active">Tickets</div>'+
