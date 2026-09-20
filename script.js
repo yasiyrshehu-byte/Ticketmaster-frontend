@@ -181,11 +181,14 @@ function eventPage(id){
       esc(g.venue)+(g.location?" - "+esc(g.location):"")+
     '</div>'+
 
-    '<div class="tm-count">🎟 x'+count+'</div>'+
+    '<div class="tm-ticket-count">'+
+   '<span class="tm-ticket-icon">🎟</span>'+
+   '<span>x'+count+'</span>'+
+'</div>'+
 
-    '<button class="tm-view-btn" onclick="viewTickets(\''+encodeURIComponent(g.id)+'\')">'+
-      '🎟 View Tickets'+
-    '</button>'+
+'<button class="tm-view-btn" onclick="viewTickets(\''+encodeURIComponent(g.id)+'\')">'+
+   'View Tickets'+
+'</button>'+
   '</div>'+
 
 '</section>'+
@@ -193,11 +196,13 @@ function eventPage(id){
   '<section class="order">'+
         '<div class="order-head"><div><div class="order-num">Order #'+esc(g.order)+'</div><div class="order-sub">x'+count+' Ticket'+(count===1?"":"s")+'</div></div><button class="dots" onclick="eventMenu(\''+encodeURIComponent(g.id)+'\')">⋮</button></div>'+
         g.tickets.map((t,i)=>ticketCard(g,t,i)).join("")+
-       <div class="tabs">
-   <button class="tab active">Tickets</button>
-   <button class="tab">Extras</button>
-</div>
-        '<div class="map"><iframe loading="lazy" title="Map" src="https://www.openstreetmap.org/export/embed.html?bbox=-79.43%2C43.63%2C-79.32%2C43.72&layer=mapnik"></iframe></div>'+
+
+'<div class="tabs">'+
+   '<button class="tab active">Tickets</button>'+
+   '<button class="tab">Extras</button>'+
+'</div>'+
+
+'<div class="map"><iframe loading="lazy" title="Map" src="https://www.openstreetmap.org/export/embed.html?bbox=-79.43%2C43.63%2C-79.32%2C43.72&layer=mapnik"></iframe></div>'+<iframe loading="lazy" title="Map" src="https://www.openstreetmap.org/export/embed.html?bbox=-79.43%2C43.63%2C-79.32%2C43.72&layer=mapnik"></iframe></div>'+
         '<div class="map-actions">'+
           '<button onclick="toast(\'Upgrade options\')">↥ Upgrade</button>'+
           '<button onclick="openTransfer(\''+encodeURIComponent(g.id)+'\')">↗ Transfer</button>'+
