@@ -126,10 +126,11 @@ body{overflow-x:hidden}
 }
 
 .ticket-tabs{
-    margin-top:135px;
+    margin-top:55px;
     display:flex;
     background:#fff;
 }
+
 
 .ticket-tab{
     flex:1;
