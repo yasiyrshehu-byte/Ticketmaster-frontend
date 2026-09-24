@@ -33,6 +33,8 @@ body{overflow-x:hidden}
   padding-bottom:86px;
   position:relative;
 }
+
+/* --- MY EVENTS HEADER --- */
 .header{
   height:54px;
   background:#000;
@@ -51,30 +53,37 @@ body{overflow-x:hidden}
   text-align:center;
   flex:1;
   letter-spacing:-0.2px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
 }
 .header .left,.header .right{width:60px;display:flex;align-items:center}
 .header .right{justify-content:flex-end}
 .back{color:#fff;font-size:24px;line-height:1;cursor:pointer}
 .help{color:#fff;font-size:15px;font-weight:600;cursor:pointer}
 .brandOnly{justify-content:center}
-.content{padding:0 0 24px}
+
+/* --- UPCOMING / PAST SUBNAV TABS --- */
 .subnav{
-  background:#fff;
+  background:#000;
   display:flex;
-  border-bottom:1px solid #d8d8dc;
+  border-bottom:1px solid #222;
 }
 .subtab{
   flex:1;
   text-align:center;
-  font-size:14px;
+  font-size:13px;
   font-weight:700;
   padding:14px 0;
-  color:#262626;
+  color:#8e8e93;
   text-decoration:none;
   position:relative;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
 }
 .subtab.active{
-  color:#000;
+  color:#fff;
   font-weight:800;
 }
 .subtab.active::after{
@@ -84,22 +93,138 @@ body{overflow-x:hidden}
   left:0;
   right:0;
   height:3px;
-  background:#000;
+  background:#fff;
 }
-.section{padding:18px 18px 0}
-.section h1{font-size:28px;letter-spacing:-.8px;margin:0 0 4px}
-.section p{margin:0;color:var(--muted);line-height:1.4}
-.event-list{padding:12px 14px 0}
-.event-card{background:#111;border-radius:2px;overflow:hidden;position:relative;margin-bottom:14px;box-shadow:0 2px 0 rgba(0,0,0,.06)}
-.event-card img{display:block;width:100%;height:220px;object-fit:cover}
-.event-card .shade{position:absolute;inset:88px 0 0;background:linear-gradient(transparent,rgba(0,0,0,.92))}
-.event-copy{position:absolute;left:16px;right:16px;bottom:62px;color:#fff}
-.event-date{font-size:13px;font-weight:750;letter-spacing:.2px;margin-bottom:7px}
-.event-title{font-size:28px;line-height:1.02;font-weight:850;letter-spacing:-.7px;margin-bottom:6px}
-.event-venue{font-size:14px;line-height:1.35;color:#ececf0}
-.view-button{position:absolute;left:16px;right:16px;bottom:12px;height:42px;background:#1f5eff;color:#fff;border-radius:7px;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer}
+
+/* --- EVENT CARDS & MY EVENTS LIST --- */
+.content{padding:0 0 24px}
+.event-list{padding:16px 16px 0}
+.event-card{
+  background:#1f2228;
+  border-radius:0;
+  overflow:hidden;
+  position:relative;
+  margin-bottom:20px;
+}
+.event-card img{
+  display:block;
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  filter:grayscale(100%);
+}
+.event-card .badge{
+  position:absolute;
+  top:12px;
+  left:12px;
+  background:rgba(255,255,255,0.2);
+  backdrop-filter:blur(10px);
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+  padding:4px 8px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  z-index:2;
+}
+.event-copy{
+  background:#1f2228;
+  padding:16px;
+  color:#fff;
+}
+.event-date{
+  display:inline-block;
+  background:rgba(255,255,255,0.12);
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+  padding:4px 8px;
+  border-radius:2px;
+  margin-bottom:10px;
+}
+.event-title{
+  font-size:20px;
+  line-height:1.2;
+  font-weight:800;
+  letter-spacing:-0.3px;
+  margin-bottom:12px;
+  text-transform:uppercase;
+  color:#fff;
+  border-bottom:2px solid rgba(255,255,255,0.8);
+  padding-bottom:10px;
+}
+.event-venue{
+  font-size:13.5px;
+  line-height:1.35;
+  color:#e1e1e6;
+  font-weight:500;
+}
+.view-button{
+  width:100%;
+  height:48px;
+  background:var(--blue);
+  color:#fff;
+  font-weight:700;
+  font-size:15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  cursor:pointer;
+  border-radius:0;
+}
 .small-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-weight:900}
-.empty{padding:60px 24px;text-align:center;color:#777}
+
+/* --- EMPTY STATE (UPCOMING TAB) --- */
+.empty{
+  padding:60px 24px;
+  text-align:center;
+  color:#111;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.empty-icon{
+  width:80px;
+  height:80px;
+  background:#111;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:32px;
+  margin-bottom:24px;
+}
+.empty-title{
+  font-size:22px;
+  font-weight:800;
+  color:#000;
+  margin-bottom:10px;
+}
+.empty-text{
+  font-size:15px;
+  color:var(--muted);
+  line-height:1.4;
+  max-width:280px;
+  margin-bottom:28px;
+}
+.empty-btn{
+  width:100%;
+  max-width:320px;
+  height:48px;
+  border:1.5px solid #000;
+  background:transparent;
+  color:#000;
+  font-weight:700;
+  font-size:15px;
+  cursor:pointer;
+}
+
+/* --- BOTTOM NAVIGATION BAR --- */
 .bottom-nav{
   position:fixed;
   left:50%;
@@ -110,7 +235,7 @@ body{overflow-x:hidden}
   background:#ffffff;
   border-top:1px solid #d9d9dc;
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(5,1fr);
   z-index:30;
   padding-bottom:env(safe-area-inset-bottom);
 }
@@ -119,15 +244,26 @@ body{overflow-x:hidden}
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:2px;
-  color:#111;
+  gap:3px;
+  color:#8e8e93;
   cursor:pointer;
-  font-size:12px;
-  font-weight:600;
+  font-size:11px;
+  font-weight:500;
 }
-.nav-item.active{color:#1f5eff}
-.nav-icon{font-size:20px;line-height:20px}
+.nav-item.active{
+  color:var(--blue);
+  font-weight:700;
+}
+.nav-icon{
+  font-size:22px;
+  line-height:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 .nav-label{font-size:11px}
+
+/* --- TICKET DETAILS SPECIFICS --- */
 .ticket-top{background:#000;color:#fff;position:relative}
 .hero{position:relative;background:#000;width:100%}
 .hero img{
@@ -180,7 +316,7 @@ body{overflow-x:hidden}
   color:#fff;
 }
 .ticket-action{
-  padding:12px 16px 16px;
+  padding:0;
   background:var(--blue);
 }
 .ticket-action button{
@@ -196,6 +332,7 @@ body{overflow-x:hidden}
   gap:8px;
   cursor:pointer;
 }
+
 .order{padding:20px 16px 8px;background:#fff}
 .order-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .order-num{font-size:17px;font-weight:800;color:#000}
@@ -336,6 +473,7 @@ body{overflow-x:hidden}
 .forward-btn.ready{opacity:1}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:94px;background:#222;color:#fff;padding:11px 15px;border-radius:999px;font-size:13px;z-index:130}
 .hidden{display:none!important}
+
 @media (min-width:700px){
   .shell{box-shadow:0 0 22px rgba(0,0,0,.15);min-height:100vh}
 }
